@@ -1,0 +1,2 @@
+- Update dependencies (turbo, eslint, pnpm, nextjs, etc.)
+- Move the root dependencies to devDependencies (they all are)
