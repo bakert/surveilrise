@@ -19,26 +19,29 @@ export async function setLastUpdated(value: string): Promise<void> {
 
 export async function updateCards(printings: ScryfallCard[]): Promise<void> {
   const BATCH_SIZE = 1000;
-
   const seenOracleIds = new Set<string>();
 
   await prisma.$transaction(async (tx) => {
     for (let i = 0; i < printings.length; i += BATCH_SIZE) {
       const batch = printings.slice(i, i + BATCH_SIZE);
 
-      for (const printing of batch) {
-        let oracleId: string;
+      // Collect operations for this batch
+      const cardUpserts: any[] = [];
+      const legalityDeletes: any[] = [];
+      const legalityCreates: any[] = [];
+      const printingUpserts: any[] = [];
 
+      for (const printing of batch) {
         if (!printing.oracle_id) {
           console.log('Skipping card without oracle_id:', printing.name);
           continue;
         }
 
         if (!seenOracleIds.has(printing.oracle_id)) {
-          // First time seeing this oracle_id, so create/update the card
           seenOracleIds.add(printing.oracle_id);
 
-          const card = await tx.card.upsert({
+          // Queue card upsert
+          cardUpserts.push({
             where: { oracleId: printing.oracle_id },
             create: {
               name: printing.name,
@@ -57,44 +60,32 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
             }
           });
 
-          oracleId = card.oracleId;
-
-          // Update legalities for this card
-          await tx.legality.deleteMany({
-            where: { oracleId: card.oracleId }
+          // Queue legality operations
+          legalityDeletes.push({
+            where: { oracleId: printing.oracle_id }
           });
 
           const legalityEntries = Object.entries(printing.legalities);
           for (const [format, status] of legalityEntries) {
-            // BAKERT legality is more complex that this, not a bool.
-            await tx.legality.create({
-              data: {
-                oracleId: card.oracleId,
-                format,
-                legal: status === 'legal'
-              }
+            legalityCreates.push({
+              oracleId: printing.oracle_id,
+              format,
+              legal: status === 'legal'
             });
           }
-        } else {
-          // We've seen this oracle_id before, look up the card.oracleId
-          const card = await tx.card.findUnique({
-            where: { oracleId: printing.oracle_id },
-            select: { oracleId: true }
-          });
-          oracleId = card!.oracleId;
         }
 
-        // Always upsert the printing
-        await tx.printing.upsert({
+        // Queue printing upsert
+        printingUpserts.push({
           where: {
             oracleId_setCode_collectorNumber: {
-              oracleId,
+              oracleId: printing.oracle_id,
               setCode: printing.set,
               collectorNumber: printing.collector_number
             }
           },
           create: {
-            oracleId,
+            oracleId: printing.oracle_id,
             setCode: printing.set,
             releasedAt: new Date(printing.released_at),
             collectorNumber: printing.collector_number,
@@ -120,6 +111,14 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
           }
         });
       }
+
+      // Execute batch operations
+      await Promise.all([
+        ...cardUpserts.map(upsert => tx.card.upsert(upsert)),
+        ...legalityDeletes.map(del => tx.legality.deleteMany(del)),
+        tx.legality.createMany({ data: legalityCreates }),
+        ...printingUpserts.map(upsert => tx.printing.upsert(upsert))
+      ]);
 
       console.log(`Processed ${Math.min((i + BATCH_SIZE), printings.length)} of ${printings.length} cards`);
     }
