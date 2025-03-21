@@ -1,0 +1,14 @@
+{
+  "name": "types",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "devDependencies": {
+    "tsconfig": "1.0.0",
+    "tsup": "^6.1.3"
+  }
+}

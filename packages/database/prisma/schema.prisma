@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 datasource db {
   provider          = "postgresql"
   url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
@@ -16,4 +13,50 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+}
+
+model Card {
+  oracleId         String   @id @unique
+  name             String
+  manaCost         String?
+  typeLine         String
+  oracleText       String?
+  colors           String[]
+
+  printings        Printing[]
+  legalities       Legality[]
+}
+
+model Printing {
+  oracleId        String
+  setCode         String
+  releasedAt      DateTime
+  collectorNumber String
+  rarity          String
+  imageUrl        String
+  usd             Decimal?
+  usdFoil         Decimal?
+  usdEtched       Decimal?
+  eur             Decimal?
+  eurFoil         Decimal?
+  tix             Decimal?
+
+  card            Card @relation(fields: [oracleId], references: [oracleId], onDelete: Cascade)
+
+  @@unique([oracleId, setCode, collectorNumber])
+}
+
+model Legality {
+  oracleId  String
+  format    String
+  legal     Boolean
+
+  card      Card    @relation(fields: [oracleId], references: [oracleId], onDelete: Cascade)
+
+  @@unique([oracleId, format])
+}
+
+model ScryfallMeta {
+  key     String  @id
+  value   String
 }

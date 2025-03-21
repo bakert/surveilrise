@@ -21,3 +21,13 @@
 - Move the ScryfallCard type out of the script because it kind of obscures the actual interesting parts by being so huge
 - Both scryfall and database need to understand ScryfallCard as it currently stands so move it somewhere shared. Or stop that being true. Importing into database from scryfall is circular.
 - Include in the README "how to connect to db", "how to run watcher while developing", "how to bring up db", "how to bring up web", etc.
+- Don't allow commit to main (github, pre-commit on local)
+- Don't allow merge unless CI/build passes
+- Automatically merge when CI/build passes
+- Include instructions about prisma generate to get types after changing db somewhere
+- The properties of ScryfallCard should use camelCase not snake_case despite the source data. We're in typescript world at that point.
+- Probably remove prisma logging, or do it differently
+- Wrapping the whole scryfall update in a transaction is nice for pass/fail but bad for perf, maybe per-card transactions instead and if some cards get updated and others don't due to a data issue, that's ok? But don't delete anything in those cases? A validation step would help but seems like a lot of extra code to keep in sync with Scryfall's doings?
+- Some cards do not have an oracle_id in the Scryfall bulk data at the top level, only at the face level. Things like https://scryfall.com/card/sld/1556/jinnie-fay-jetmirs-second-jinnie-fay-jetmirs-second. I am skiping them for now but we should accommodate them.
+- We never delete a card if the oracle_id ceases to exist. I'm not sure how common this is but could be important if a card got a new oracle_id for some reason we wouldn't want it to show up twice. Probably just select all oracle ids at the start of the update, diff with those found during the update, and delete the diff (if a small number, if high flag to a human)
+- A single imgUrl for a Printing is very naïve, cards have more than one image frequently

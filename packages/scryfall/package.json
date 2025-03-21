@@ -13,13 +13,13 @@
   "keywords": [],
   "author": "",
   "dependencies": {
-    "database": "workspace:*"
+    "database": "1.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.17",
     "ts-node": "^10.9.2",
-    "tsconfig": "workspace:*",
+    "tsconfig": "1.0.0",
     "tsup": "^6.1.3",
-    "types": "workspace:*"
+    "types": "1.0.0"
   }
 }

@@ -30,7 +30,7 @@ importers:
   apps/docs:
     dependencies:
       database:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../../packages/database
       next:
         specifier: ^13.4.1
@@ -42,7 +42,7 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       ui:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../../packages/ui
     devDependencies:
       '@prisma/nextjs-monorepo-workaround-plugin':
@@ -50,7 +50,7 @@ importers:
         version: 4.16.2
       '@types/node':
         specifier: ^18.11.17
-        version: 18.19.80
+        version: 18.19.81
       '@types/react':
         specifier: ^18.2.5
         version: 18.3.19
@@ -67,14 +67,14 @@ importers:
         specifier: ^8.4.20
         version: 8.5.3
       tailwind-config:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../../packages/tailwind-config
       tailwindcss:
         specifier: ^3.2.4
         version: 3.4.17
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: 1.0.0
+        version: link:../../packages/tsconfig
       typescript:
         specifier: ^4.9.4
         version: 4.9.5
@@ -82,10 +82,10 @@ importers:
   apps/web:
     dependencies:
       database:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../../packages/database
       env:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../../packages/env
       next:
         specifier: ^13.4.1
@@ -97,7 +97,7 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       ui:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../../packages/ui
     devDependencies:
       '@prisma/nextjs-monorepo-workaround-plugin':
@@ -105,7 +105,7 @@ importers:
         version: 4.16.2
       '@types/node':
         specifier: ^18.11.17
-        version: 18.19.80
+        version: 18.19.81
       '@types/react':
         specifier: ^18.2.5
         version: 18.3.19
@@ -116,20 +116,20 @@ importers:
         specifier: ^10.4.13
         version: 10.4.21(postcss@8.5.3)
       eslint-config-custom:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../../packages/eslint-config-custom
       postcss:
         specifier: ^8.4.20
         version: 8.5.3
       tailwind-config:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../../packages/tailwind-config
       tailwindcss:
         specifier: ^3.2.4
         version: 3.4.17
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: 1.0.0
+        version: link:../../packages/tsconfig
       typescript:
         specifier: ^4.9.4
         version: 4.9.5
@@ -139,18 +139,15 @@ importers:
       '@prisma/client':
         specifier: ^4.14.1
         version: 4.16.2(prisma@4.16.2)
-      types:
-        specifier: workspace:*
-        version: link:../types
     devDependencies:
       '@types/node':
         specifier: ^18.11.17
-        version: 18.19.80
+        version: 18.19.81
       eslint:
         specifier: ^7.32.0
         version: 7.32.0
       eslint-config-custom:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../eslint-config-custom
       prisma:
         specifier: ^4.14.1
@@ -159,14 +156,17 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: 1.0.0
+        version: link:../tsconfig
       tsup:
         specifier: ^6.1.3
         version: 6.7.0(typescript@4.9.5)
       tsx:
         specifier: ^3.7.1
         version: 3.14.0
+      types:
+        specifier: 1.0.0
+        version: link:../types
       typescript:
         specifier: ^4.9.4
         version: 4.9.5
@@ -182,7 +182,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: ^18.11.17
-        version: 18.19.80
+        version: 18.19.81
       dotenv-cli:
         specifier: ^7.2.1
         version: 7.4.4
@@ -197,7 +197,7 @@ importers:
         version: 8.5.3
       tsconfig:
         specifier: '*'
-        version: 7.0.0
+        version: link:../tsconfig
       tsup:
         specifier: ^6.1.3
         version: 6.7.0(postcss@8.5.3)(typescript@4.9.5)
@@ -223,24 +223,24 @@ importers:
   packages/scryfall:
     dependencies:
       database:
-        specifier: workspace:*
+        specifier: 1.0.0
         version: link:../database
-      types:
-        specifier: workspace:*
-        version: link:../types
     devDependencies:
       '@types/node':
         specifier: ^18.11.17
-        version: 18.19.80
+        version: 18.19.81
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@18.19.80)(typescript@4.9.5)
+        version: 10.9.2(@types/node@18.19.81)(typescript@4.9.5)
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: 1.0.0
+        version: link:../tsconfig
       tsup:
         specifier: ^6.1.3
         version: 6.7.0(ts-node@10.9.2)(typescript@4.9.5)
+      types:
+        specifier: 1.0.0
+        version: link:../types
 
   packages/tailwind-config:
     devDependencies:
@@ -253,8 +253,8 @@ importers:
   packages/types:
     devDependencies:
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: 1.0.0
+        version: link:../tsconfig
       tsup:
         specifier: ^6.1.3
         version: 6.7.0(typescript@4.9.5)
@@ -272,7 +272,7 @@ importers:
         specifier: ^7.32.0
         version: 7.32.0
       eslint-config-custom:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../eslint-config-custom
       postcss:
         specifier: ^8.4.20
@@ -281,11 +281,11 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1
       tailwind-config:
-        specifier: '*'
+        specifier: 1.0.0
         version: link:../tailwind-config
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: 1.0.0
+        version: link:../tsconfig
       tsup:
         specifier: ^6.1.3
         version: 6.7.0(postcss@8.5.3)(typescript@4.9.5)
@@ -1105,11 +1105,11 @@ packages:
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 18.19.80
+      '@types/node': 18.19.81
     dev: false
 
-  /@types/node@18.19.80:
-    resolution: {integrity: sha512-kEWeMwMeIvxYkeg1gTc01awpwLbfMRZXdIhwRcakd/KlK53jmRC26LqcbIt7fnAQTu5GzlnWmzA3H6+l1u6xxQ==}
+  /@types/node@18.19.81:
+    resolution: {integrity: sha512-7KO9oZ2//ivtSsryp0LQUqq79zyGXzwq1WqfywpC9ucjY7YyltMMmxWgtRFRKCxwa7VPxVBVy4kHf5UC1E8Lug==}
     dependencies:
       undici-types: 5.26.5
 
@@ -1135,20 +1135,12 @@ packages:
   /@types/responselike@1.0.3:
     resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
     dependencies:
-      '@types/node': 18.19.80
+      '@types/node': 18.19.81
     dev: false
 
   /@types/semver@6.2.7:
     resolution: {integrity: sha512-blctEWbzUFzQx799RZjzzIdBJOXmE37YYEyDtKkx5Dg+V7o/zyyAxLPiI98A2jdTtDgxZleMdfV+7p8WbRJ1OQ==}
     dev: false
-
-  /@types/strip-bom@3.0.0:
-    resolution: {integrity: sha512-xevGOReSYGM7g/kUBZzPqCrR/KYAo+F0yiPc85WFTJa0MSLtyFTVTU6cJu/aV4mid7IffDIWqo69THF2o4JiEQ==}
-    dev: true
-
-  /@types/strip-json-comments@0.0.30:
-    resolution: {integrity: sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ==}
-    dev: true
 
   /@typescript-eslint/parser@6.21.0(eslint@7.32.0)(typescript@4.9.5):
     resolution: {integrity: sha512-tbsV1jPne5CkFQCgPBcDOt30ItF7aJoZL997JSF7MhGQqOeT3svWRYxiqlfA5RUdlHN6Fi+EI9bxqbdyAUZjYQ==}
@@ -3712,7 +3704,7 @@ packages:
         optional: true
     dependencies:
       lilconfig: 2.1.0
-      ts-node: 10.9.2(@types/node@18.19.80)(typescript@4.9.5)
+      ts-node: 10.9.2(@types/node@18.19.81)(typescript@4.9.5)
       yaml: 1.10.2
     dev: true
 
@@ -4308,6 +4300,7 @@ packages:
   /strip-bom@3.0.0:
     resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
     engines: {node: '>=4'}
+    dev: false
 
   /strip-final-newline@2.0.0:
     resolution: {integrity: sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==}
@@ -4317,6 +4310,7 @@ packages:
   /strip-json-comments@2.0.1:
     resolution: {integrity: sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /strip-json-comments@3.1.1:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
@@ -4469,7 +4463,7 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: true
 
-  /ts-node@10.9.2(@types/node@18.19.80)(typescript@4.9.5):
+  /ts-node@10.9.2(@types/node@18.19.81)(typescript@4.9.5):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
@@ -4488,7 +4482,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 18.19.80
+      '@types/node': 18.19.81
       acorn: 8.14.1
       acorn-walk: 8.3.4
       arg: 4.1.3
@@ -4508,15 +4502,6 @@ packages:
       minimist: 1.2.8
       strip-bom: 3.0.0
     dev: false
-
-  /tsconfig@7.0.0:
-    resolution: {integrity: sha512-vZXmzPrL+EmC4T/4rVlT2jNVMWCi/O4DIiSj3UHg1OE5kCKbk4mfrXc6dZksLgRM/TZlKnousKH9bbTazUWRRw==}
-    dependencies:
-      '@types/strip-bom': 3.0.0
-      '@types/strip-json-comments': 0.0.30
-      strip-bom: 3.0.0
-      strip-json-comments: 2.0.1
-    dev: true
 
   /tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
