@@ -1,5 +1,5 @@
-import { lex } from '../parser';
-import { BooleanOperator, Expression, Key, Operator, StringToken } from '../types';
+import { lex } from './parser';
+import { BooleanOperator, Expression, Key, Operator, StringToken } from './types';
 
 describe('SearchParser', () => {
   it('should parse a simple field-value pair', () => {

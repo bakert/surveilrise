@@ -1,5 +1,5 @@
-import { QueryBuilder } from '../queryBuilder';
-import { Expression, Key, StringToken, Operator } from '../types';
+import { QueryBuilder } from './queryBuilder';
+import { Expression, Key, StringToken, Operator } from './types';
 
 describe('QueryBuilder', () => {
   const builder = new QueryBuilder();
