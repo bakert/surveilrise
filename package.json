@@ -1,7 +1,7 @@
 {
-  "name": "turborepo-tailwind-prisma-nextjs-starter",
+  "name": "surveilrise",
   "version": "1.0.0",
-  "description": "Turborepo starter with Tailwind CSS and Prisma",
+  "description": "Scryfall clone",
   "private": true,
   "scripts": {
     "build": "turbo build",
