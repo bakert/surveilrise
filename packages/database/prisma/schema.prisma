@@ -16,15 +16,14 @@ model User {
 }
 
 model Card {
-  oracleId         String   @id @unique
-  name             String
-  manaCost         String?
-  typeLine         String
-  oracleText       String?
-  colors           String[]
-
-  printings        Printing[]
-  legalities       Legality[]
+  oracleId   String     @id @unique
+  name       String
+  manaCost   String?
+  typeLine   String
+  oracleText String?
+  colors     String[]
+  legalities Legality[]
+  printings  Printing[]
 }
 
 model Printing {
@@ -40,23 +39,21 @@ model Printing {
   eur             Decimal?
   eurFoil         Decimal?
   tix             Decimal?
-
-  card            Card @relation(fields: [oracleId], references: [oracleId], onDelete: Cascade)
+  card            Card     @relation(fields: [oracleId], references: [oracleId], onDelete: Cascade)
 
   @@unique([oracleId, setCode, collectorNumber])
 }
 
 model Legality {
-  oracleId  String
-  format    String
-  legal     Boolean
-
-  card      Card    @relation(fields: [oracleId], references: [oracleId], onDelete: Cascade)
+  oracleId String
+  format   String
+  legal    Boolean
+  card     Card    @relation(fields: [oracleId], references: [oracleId], onDelete: Cascade)
 
   @@unique([oracleId, format])
 }
 
 model ScryfallMeta {
-  key     String  @id
-  value   String
+  key   String @id
+  value String
 }
