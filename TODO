@@ -1,2 +1,4 @@
 - Update dependencies (turbo, eslint, pnpm, nextjs, etc.)
 - Move the root dependencies to devDependencies (they all are)
+- Rename scryfall's index.ts to ingest.ts or something more descriptive
+- Make the location of the scryfall download (and any created file) configurable
