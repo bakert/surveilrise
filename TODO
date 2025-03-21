@@ -11,3 +11,13 @@
 - face table
 - More unique constraints could be added to the Scryfall stuff, what we have is pretty arbitrary
 - Does the bulk data we're fetching include non-English card info? Should it?
+- Think about logging more holistically. Maybe we call a centralized logger and that chooses to console.log
+- Model bulk data last updated as a date not a string
+- Test the upsert and delete stuff with an older bulk data
+- Entire db update should be in a transaction that fails if any part of it fails (either scryfall changed their schema, or added a layout we don't recognize, or any number of things
+- Should database/scryfall be called database/cards? Or is it such a mirror of scryfall that it's better named scryfall?
+- Rename the db from "turborepo"
+- Figure out why `cd packages/database/ && pnpm db:migrate:reset` doesn't create the _prisma_migrations table. Either add something like `pnpm --filter database exec -- prisma migrate resolve --applied 20230520223517_init` to instructions or just make it work correctly
+- Move the ScryfallCard type out of the script because it kind of obscures the actual interesting parts by being so huge
+- Both scryfall and database need to understand ScryfallCard as it currently stands so move it somewhere shared. Or stop that being true. Importing into database from scryfall is circular.
+- Include in the README "how to connect to db", "how to run watcher while developing", "how to bring up db", "how to bring up web", etc.
