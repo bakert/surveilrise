@@ -3,3 +3,11 @@
 - Rename scryfall's index.ts to ingest.ts or something more descriptive
 - Make the location of the scryfall download (and any created file) configurable
 - Use tsup not tsc for scryfall build step?
+- Check mtime of downloaded scryfall file and don't re-download if we already have latest
+- Make the new Scryfall database "off to one  side" and then swap it in when it's ready
+- Break apart fetching scryfall bulk data to the filesystem and parsing the bulk data and inserting into db
+- Some retry logic (or via lib) for downloading
+- format table
+- face table
+- More unique constraints could be added to the Scryfall stuff, what we have is pretty arbitrary
+- Does the bulk data we're fetching include non-English card info? Should it?
