@@ -43,15 +43,15 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.15.9
+
       - name: Setup Node 18
         uses: actions/setup-node@v3
         with:
           node-version: 18
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2.2.4
-        with:
-          version: 8.15.9
 
       - name: Get pnpm store directory
         id: pnpm-cache
