@@ -8,8 +8,8 @@ async function main() {
   const res = await fetch(SCRYFALL_BULK_URL);
   if (!res.ok) throw new Error(`Failed to fetch bulk data: ${res.statusText}`);
 
-  const data = await res.json();
-  const defaultCards = data.data.find((d: any) => d.type === "default_cards");
+  const data = await res.json() as { data: { type: string; download_uri: string }[] };
+  const defaultCards = data.data.find((d) => d.type === "default_cards");
 
   if (!defaultCards) throw new Error("Default cards bulk data not found");
 
