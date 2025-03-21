@@ -33,4 +33,5 @@
 - A single imgUrl for a Printing is very naïve, cards have more than one image frequently
 - You should be able to chain our custom errors (options second param)
 - Find a better place for reset-scryfall and test-query if we're keeping them around
-
+- Unit tests and functional tests should have commands in the packages and even maybe at the top level
+- Should queryBuilder just be called query?
