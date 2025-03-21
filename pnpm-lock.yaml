@@ -30,7 +30,7 @@ importers:
   apps/docs:
     dependencies:
       database:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/database
       next:
         specifier: ^13.4.1
@@ -42,7 +42,7 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       ui:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/ui
     devDependencies:
       '@prisma/nextjs-monorepo-workaround-plugin':
@@ -67,14 +67,14 @@ importers:
         specifier: ^8.4.20
         version: 8.5.3
       tailwind-config:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/tailwind-config
       tailwindcss:
         specifier: ^3.2.4
         version: 3.4.17
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       typescript:
         specifier: ^4.9.4
         version: 4.9.5
@@ -82,10 +82,10 @@ importers:
   apps/web:
     dependencies:
       database:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/database
       env:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/env
       next:
         specifier: ^13.4.1
@@ -97,7 +97,7 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       ui:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/ui
     devDependencies:
       '@prisma/nextjs-monorepo-workaround-plugin':
@@ -116,20 +116,20 @@ importers:
         specifier: ^10.4.13
         version: 10.4.21(postcss@8.5.3)
       eslint-config-custom:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/eslint-config-custom
       postcss:
         specifier: ^8.4.20
         version: 8.5.3
       tailwind-config:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/tailwind-config
       tailwindcss:
         specifier: ^3.2.4
         version: 3.4.17
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       typescript:
         specifier: ^4.9.4
         version: 4.9.5
@@ -139,9 +139,6 @@ importers:
       '@prisma/client':
         specifier: ^4.14.1
         version: 4.16.2(prisma@4.16.2)
-      types:
-        specifier: workspace:*
-        version: link:../types
     devDependencies:
       '@types/node':
         specifier: ^18.11.17
@@ -150,7 +147,7 @@ importers:
         specifier: ^7.32.0
         version: 7.32.0
       eslint-config-custom:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../eslint-config-custom
       prisma:
         specifier: ^4.14.1
@@ -159,14 +156,17 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: workspace:*
+        version: link:../tsconfig
       tsup:
         specifier: ^6.1.3
         version: 6.7.0(typescript@4.9.5)
       tsx:
         specifier: ^3.7.1
         version: 3.14.0
+      types:
+        specifier: workspace:*
+        version: link:../types
       typescript:
         specifier: ^4.9.4
         version: 4.9.5
@@ -225,9 +225,6 @@ importers:
       database:
         specifier: workspace:*
         version: link:../database
-      types:
-        specifier: workspace:*
-        version: link:../types
     devDependencies:
       '@types/node':
         specifier: ^18.11.17
@@ -236,11 +233,14 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@18.19.80)(typescript@4.9.5)
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: workspace:*
+        version: link:../tsconfig
       tsup:
         specifier: ^6.1.3
         version: 6.7.0(ts-node@10.9.2)(typescript@4.9.5)
+      types:
+        specifier: workspace:*
+        version: link:../types
 
   packages/tailwind-config:
     devDependencies:
@@ -253,8 +253,8 @@ importers:
   packages/types:
     devDependencies:
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: workspace:*
+        version: link:../tsconfig
       tsup:
         specifier: ^6.1.3
         version: 6.7.0(typescript@4.9.5)
@@ -272,7 +272,7 @@ importers:
         specifier: ^7.32.0
         version: 7.32.0
       eslint-config-custom:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../eslint-config-custom
       postcss:
         specifier: ^8.4.20
@@ -281,11 +281,11 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1
       tailwind-config:
-        specifier: '*'
+        specifier: workspace:*
         version: link:../tailwind-config
       tsconfig:
-        specifier: '*'
-        version: 7.0.0
+        specifier: workspace:*
+        version: link:../tsconfig
       tsup:
         specifier: ^6.1.3
         version: 6.7.0(postcss@8.5.3)(typescript@4.9.5)
