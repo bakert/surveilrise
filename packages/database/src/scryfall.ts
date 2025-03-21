@@ -38,8 +38,6 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
           // First time seeing this oracle_id, so create/update the card
           seenOracleIds.add(printing.oracle_id);
 
-          console.log('Creating card:', { oracleId: printing.oracle_id, typeLine: printing.type_line });
-
           const card = await tx.card.upsert({
             where: { oracleId: printing.oracle_id },
             create: {
@@ -68,7 +66,6 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
 
           const legalityEntries = Object.entries(printing.legalities);
           for (const [format, status] of legalityEntries) {
-            console.log('Creating legality:', { oracleId, format, status });
             // BAKERT legality is more complex that this, not a bool.
             await tx.legality.create({
               data: {
@@ -126,16 +123,6 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
 
       console.log(`Processed ${Math.min((i + BATCH_SIZE), printings.length)} of ${printings.length} cards`);
     }
-
-    // Delete cards that no longer exist in Scryfall
-    const oracleIds = new Set(printings.map(p => p.oracle_id));
-    await tx.card.deleteMany({
-      where: {
-        oracleId: {
-          notIn: Array.from(oracleIds)
-        }
-      }
-    });
   }, {
     timeout: 1000 * 60 * 60 // 60 minute timeout
   });
