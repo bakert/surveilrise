@@ -16,8 +16,7 @@ model User {
 }
 
 model Card {
-  id               String   @id @default(uuid())
-  oracleId         String   @unique
+  oracleId         String   @id @unique
   name             String
   manaCost         String?
   typeLine         String
@@ -29,8 +28,7 @@ model Card {
 }
 
 model Printing {
-  id              String   @id @default(uuid())
-  cardId          String
+  oracleId        String
   setCode         String
   releasedAt      DateTime
   collectorNumber String
@@ -43,20 +41,19 @@ model Printing {
   eurFoil         Decimal?
   tix             Decimal?
 
-  card            Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  card            Card @relation(fields: [oracleId], references: [oracleId], onDelete: Cascade)
 
-  @@unique([cardId, setCode, collectorNumber])
+  @@unique([oracleId, setCode, collectorNumber])
 }
 
 model Legality {
-  id        String  @id @default(uuid())
-  cardId    String  @unique(map: "card_legalities_unique")
+  oracleId  String
   format    String
   legal     Boolean
 
-  card      Card    @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  card      Card    @relation(fields: [oracleId], references: [oracleId], onDelete: Cascade)
 
-  @@unique([cardId, format])
+  @@unique([oracleId, format])
 }
 
 model ScryfallMeta {

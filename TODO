@@ -24,3 +24,8 @@
 - Don't allow commit to main (github, pre-commit on local)
 - Don't allow merge unless CI/build passes
 - Automatically merge when CI/build passes
+- Include instructions about prisma generate to get types after changing db somewhere
+- The properties of ScryfallCard should use camelCase not snake_case despite the source data. We're in typescript world at that point.
+- Probably remove prisma logging, or do it differently
+- Wrapping the whole scryfall update in a transaction is nice for pass/fail but bad for perf, maybe per-card transactions instead and if some cards get updated and others don't due to a data issue, that's ok? But don't delete anything in those cases?
+- Some cards do not have an oracle_id in the Scryfall bulk data at the top level, only at the face level. Things like https://scryfall.com/card/sld/1556/jinnie-fay-jetmirs-second-jinnie-fay-jetmirs-second. I am skiping them for now but we should accommodate them.
