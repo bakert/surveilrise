@@ -8,7 +8,7 @@
     "dev": "tsup --watch"
   },
   "devDependencies": {
-    "tsconfig": "workspace:*",
+    "tsconfig": "workspace:^1.0.0",
     "tsup": "^6.1.3"
   }
-} 
+}
