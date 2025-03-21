@@ -32,3 +32,5 @@
 - We never delete a card if the oracle_id ceases to exist. I'm not sure how common this is but could be important if a card got a new oracle_id for some reason we wouldn't want it to show up twice. Probably just select all oracle ids at the start of the update, diff with those found during the update, and delete the diff (if a small number, if high flag to a human)
 - A single imgUrl for a Printing is very naïve, cards have more than one image frequently
 - You should be able to chain our custom errors (options second param)
+- Find a better place for reset-scryfall and test-query if we're keeping them around
+
