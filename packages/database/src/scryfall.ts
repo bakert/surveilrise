@@ -1,11 +1,13 @@
 import { prisma } from "./client";
 import type { ScryfallCard } from "types";
 import { Decimal } from "@prisma/client/runtime/library";
+import type { Prisma, PrismaClient, ScryfallMeta } from "@prisma/client";
+
 export async function getLastUpdated(): Promise<string | null> {
-  const meta = await prisma.scryfallMeta.findFirst({
+  const meta = (await prisma.scryfallMeta.findFirst({
     where: { key: "last_updated" },
     select: { value: true },
-  });
+  })) as ScryfallMeta | null;
   return meta?.value ?? null;
 }
 

@@ -2,7 +2,7 @@ import { prisma } from "./client";
 import readline from "readline";
 import { Prisma } from "@prisma/client";
 
-async function main() {
+async function main(): Promise<void> {
   const clearAll = process.argv.includes("--clear-all");
 
   if (clearAll) {
@@ -11,7 +11,8 @@ async function main() {
     await clearLastUpdated();
   }
 }
-async function clearEntireDatabase() {
+
+async function clearEntireDatabase(): Promise<void> {
   const confirmed = await confirm(
     "Are you sure you want to clear the entire database?"
   );
@@ -26,7 +27,7 @@ async function clearEntireDatabase() {
     WHERE schemaname = 'public'`;
 
   for (const { tablename } of result) {
-    if (tablename.startsWith("_")) {
+    if (typeof tablename !== "string" || tablename.startsWith("_")) {
       console.log(`Skipping table ${tablename}`);
       continue;
     }
@@ -38,7 +39,7 @@ async function clearEntireDatabase() {
   console.log("Cleared entire database");
 }
 
-async function clearLastUpdated() {
+async function clearLastUpdated(): Promise<void> {
   await prisma.scryfallMeta.deleteMany({
     where: {
       key: "last_updated",

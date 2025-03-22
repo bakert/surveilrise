@@ -1,5 +1,6 @@
 import { statValue } from "./scryfall";
 import { Decimal } from "@prisma/client/runtime/library";
+import { describe, expect, it } from "@jest/globals";
 
 // Here's a look at every unusual power and toughness value in mtg at time of writing (March 2025).
 // powerValue and toughnessValue here are the result of calling parseFloat on the provided string.
