@@ -1,7 +1,7 @@
 import { parseSearchQuery } from "search";
 import { prisma } from "database";
 import { DEFAULT_PAGE_SIZE } from "../../constants";
-import type { Card, Printing, Prisma } from "@prisma/client";
+import type { Card, Printing, Prisma, PrismaClient } from "@prisma/client";
 
 interface TransformedCard {
   id: string;
@@ -50,6 +50,8 @@ type CardWithPrintings = Card & {
   printings: Printing[];
 };
 
+const typedPrisma = prisma as PrismaClient;
+
 export class SearchService {
   static async search({
     query,
@@ -64,7 +66,7 @@ export class SearchService {
     const whereClause = searchQuery.where;
     const printingsWhere = searchQuery.include?.printings.where;
 
-    const total = await prisma.card.count({
+    const total = await typedPrisma.card.count({
       where: whereClause,
     });
 
@@ -85,9 +87,9 @@ export class SearchService {
       },
     } as const;
 
-    const cards = (await prisma.card.findMany(
+    const cards = (await typedPrisma.card.findMany(
       prismaQuery
-    )) as unknown as CardWithPrintings[];
+    )) as CardWithPrintings[];
 
     const transformedCards: TransformedCard[] = cards.map((card) => ({
       id: card.oracleId,
