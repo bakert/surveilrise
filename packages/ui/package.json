@@ -9,7 +9,6 @@
     ".": "./dist",
     "./styles.css": "./dist/index.css"
   },
-  "license": "MIT",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
