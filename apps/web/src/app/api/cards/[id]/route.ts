@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "database";
-import type { Card, Printing } from "@prisma/client";
+import type { Card, Printing, PrismaClient } from "@prisma/client";
 
 interface CardResponse {
   id: string;
@@ -16,12 +16,18 @@ interface CardResponse {
   collectorNumber: string;
 }
 
+type CardWithPrintings = Card & {
+  printings: Printing[];
+};
+
+const typedPrisma = prisma as PrismaClient;
+
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ): Promise<NextResponse<{ error: string } | CardResponse>> {
   try {
-    const card = (await prisma.card.findUnique({
+    const card = (await typedPrisma.card.findUnique({
       where: {
         oracleId: params.id,
       },
@@ -33,7 +39,7 @@ export async function GET(
           take: 1,
         },
       },
-    })) as (Card & { printings: Printing[] }) | null;
+    })) as CardWithPrintings | null;
 
     if (!card) {
       return NextResponse.json({ error: "Card not found" }, { status: 404 });
