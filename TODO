@@ -21,7 +21,7 @@
 - Move the ScryfallCard type out of the script because it kind of obscures the actual interesting parts by being so huge
 - Both scryfall and database need to understand ScryfallCard as it currently stands so move it somewhere shared. Or stop that being true. Importing into database from scryfall is circular.
 - Include in the README "how to connect to db", "how to run watcher while developing", "how to bring up db", "how to bring up web", etc.
-- Don't allow commit to main (github, pre-commit on local)
+- Don't allow commit to main (done on github, pre-commit on local)
 - Don't allow merge unless CI/build passes
 - Automatically merge when CI/build passes
 - Include instructions about prisma generate to get types after changing db somewhere

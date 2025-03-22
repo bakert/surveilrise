@@ -98,16 +98,6 @@ export function parseQuery(query: string): Expression {
     position += 1;
   }
 
-  // BAKERT probably handle this without a try catch, or wrap the whole thing if necessary
-  try {
-    // Handle nesting validation
-  } catch (e) {
-    if (e instanceof KeyError) {
-      throw new InvalidSearchError(`Invalid nesting in ${query}`);
-    }
-    throw e;
-  }
-
   if (mode === State.QuotedString) {
     throw new InvalidSearchError(`Reached end of expression without finding the end of a quoted string in ${query}`);
   }
