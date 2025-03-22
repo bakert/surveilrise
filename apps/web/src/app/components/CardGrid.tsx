@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { DEFAULT_PAGE_SIZE } from '../constants';
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DEFAULT_PAGE_SIZE } from "../constants";
 
 interface Card {
   id: string;
@@ -21,8 +21,8 @@ interface SearchResponse {
 export function CardGrid() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const query = searchParams.get('q');
-  const page = parseInt(searchParams.get('page') || '1');
+  const query = searchParams.get("q");
+  const page = parseInt(searchParams.get("page") || "1");
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,14 +35,16 @@ export function CardGrid() {
       setError(null);
 
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&page=${page}`);
+        const response = await fetch(
+          `/api/search?q=${encodeURIComponent(query)}&page=${page}`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch results');
+          throw new Error("Failed to fetch results");
         }
         const data = await response.json();
         setResults(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
       }
@@ -103,7 +105,7 @@ export function CardGrid() {
         if (range[i] - l === 2) {
           rangeWithDots.push(l + 1);
         } else if (range[i] - l !== 1) {
-          rangeWithDots.push('...');
+          rangeWithDots.push("...");
         }
       }
       rangeWithDots.push(range[i]);
@@ -122,7 +124,7 @@ export function CardGrid() {
             key={card.id}
             className="relative aspect-[2.5/3.5] cursor-pointer hover:opacity-90 transition-opacity"
             onClick={() => {
-              console.log('Clicking card:', card);
+              console.log("Clicking card:", card);
               router.push(`/card/${card.id}`);
             }}
           >
@@ -136,7 +138,9 @@ export function CardGrid() {
               />
             ) : (
               <div className="w-full h-full bg-gray-700 rounded-lg flex items-center justify-center p-4">
-                <span className="text-gray-400 text-sm text-center">{card.name}</span>
+                <span className="text-gray-400 text-sm text-center">
+                  {card.name}
+                </span>
               </div>
             )}
           </div>
@@ -149,28 +153,48 @@ export function CardGrid() {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => router.push(`/?q=${encodeURIComponent(query)}&page=${Math.max(1, page - 1)}`)}
+            onClick={() =>
+              router.push(
+                `/?q=${encodeURIComponent(query)}&page=${Math.max(1, page - 1)}`
+              )
+            }
             disabled={page === 1}
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          {getPaginationArray().map((pageNum, index) => (
-            pageNum === '...' ? (
-              <span key={`ellipsis-${index}`} className="px-4 py-2 text-gray-400">...</span>
+          {getPaginationArray().map((pageNum, index) =>
+            pageNum === "..." ? (
+              <span
+                key={`ellipsis-${index}`}
+                className="px-4 py-2 text-gray-400"
+              >
+                ...
+              </span>
             ) : (
               <Button
                 key={pageNum}
                 variant={pageNum === page ? "default" : "outline"}
-                onClick={() => router.push(`/?q=${encodeURIComponent(query)}&page=${pageNum}`)}
+                onClick={() =>
+                  router.push(
+                    `/?q=${encodeURIComponent(query)}&page=${pageNum}`
+                  )
+                }
               >
                 {pageNum}
               </Button>
             )
-          ))}
+          )}
           <Button
             variant="outline"
             size="icon"
-            onClick={() => router.push(`/?q=${encodeURIComponent(query)}&page=${Math.min(totalPages, page + 1)}`)}
+            onClick={() =>
+              router.push(
+                `/?q=${encodeURIComponent(query)}&page=${Math.min(
+                  totalPages,
+                  page + 1
+                )}`
+              )
+            }
             disabled={page === totalPages}
           >
             <ChevronRight className="h-4 w-4" />

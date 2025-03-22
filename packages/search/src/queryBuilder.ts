@@ -1,4 +1,12 @@
-import { SearchQuery, Expression, Key, StringToken, BooleanOperator, Operator, WhereClause } from './types';
+import {
+  SearchQuery,
+  Expression,
+  Key,
+  StringToken,
+  BooleanOperator,
+  Operator,
+  WhereClause,
+} from "./types";
 
 export class QueryBuilder {
   private printingsWhere: WhereClause = {};
@@ -10,10 +18,10 @@ export class QueryBuilder {
         printings: {
           where: this.printingsWhere,
           orderBy: {
-            releasedAt: 'desc'
-          }
-        }
-      }
+            releasedAt: "desc",
+          },
+        },
+      },
     };
 
     // Process tokens in order
@@ -30,47 +38,51 @@ export class QueryBuilder {
         if (subQuery.where.AND) {
           query.where.AND.push(...subQuery.where.AND);
         }
-      }
-      else if (token instanceof Key) {
+      } else if (token instanceof Key) {
         // Process key-operator-value triplet
         try {
           const operator = tokens[i + 1];
           const value = tokens[i + 2];
-          if (!(operator instanceof Operator) || !(value instanceof StringToken)) {
-            throw new Error('Invalid key-operator-value sequence');
+          if (
+            !(operator instanceof Operator) ||
+            !(value instanceof StringToken)
+          ) {
+            throw new Error("Invalid key-operator-value sequence");
           }
-          const criterion = this.buildCriterion(token.value(), operator.value(), value.value());
+          const criterion = this.buildCriterion(
+            token.value(),
+            operator.value(),
+            value.value()
+          );
           if (!query.where.AND) query.where.AND = [];
           query.where.AND.push(criterion);
           i += 2;
         } catch (e) {
-          throw new Error('Invalid search expression');
+          throw new Error("Invalid search expression");
         }
-      }
-      else if (token instanceof BooleanOperator) {
+      } else if (token instanceof BooleanOperator) {
         if (i === 0) {
-          throw new Error('Cannot start expression with boolean operator');
+          throw new Error("Cannot start expression with boolean operator");
         }
         if (i === tokens.length - 1) {
-          throw new Error('Cannot end expression with boolean operator');
+          throw new Error("Cannot end expression with boolean operator");
         }
         // Handle OR operator by creating new OR array
-        if (token.value() === 'or') {
+        if (token.value() === "or") {
           if (!query.where.OR) query.where.OR = [];
           const right = this.build(new Expression(tokens.slice(i + 1)));
           query.where.OR.push(query.where);
           query.where.OR.push(right.where);
           break;
         }
-      }
-      else if (token instanceof StringToken) {
+      } else if (token instanceof StringToken) {
         // Bare string token - search name
         if (!query.where.AND) query.where.AND = [];
         query.where.AND.push({
           name: {
             contains: token.value(),
-            mode: 'insensitive'
-          }
+            mode: "insensitive",
+          },
         });
       }
 
@@ -89,76 +101,76 @@ export class QueryBuilder {
 
   private buildCriterion(field: string, operator: string, value: string): any {
     switch (field) {
-      case 'c':
-      case 'color':
+      case "c":
+      case "color":
         return this.buildColorQuery(operator, value);
 
-      case 'f':
-      case 'format':
+      case "f":
+      case "format":
         return {
           legalities: {
             some: {
               format: {
                 equals: value,
-                mode: 'insensitive'
+                mode: "insensitive",
               },
               status: {
-                equals: 'legal'
-              }
-            }
-          }
+                equals: "legal",
+              },
+            },
+          },
         };
 
-      case 'o':
-      case 'oracle':
+      case "o":
+      case "oracle":
         return {
           oracleText: {
             contains: value,
-            mode: 'insensitive'
-          }
+            mode: "insensitive",
+          },
         };
 
-      case 't':
-      case 'type':
+      case "t":
+      case "type":
         return {
           typeLine: {
             contains: value,
-            mode: 'insensitive'
-          }
+            mode: "insensitive",
+          },
         };
 
-      case 'pow':
-      case 'power':
+      case "pow":
+      case "power":
         return {
-          powerValue: this.buildNumericComparison(operator, value)
+          powerValue: this.buildNumericComparison(operator, value),
         };
 
-      case 'tou':
-      case 'toughness':
+      case "tou":
+      case "toughness":
         return {
-          toughnessValue: this.buildNumericComparison(operator, value)
+          toughnessValue: this.buildNumericComparison(operator, value),
         };
 
-      case 'mv':
-      case 'cmc':
+      case "mv":
+      case "cmc":
         return {
-          manaValue: this.buildNumericComparison(operator, value)
+          manaValue: this.buildNumericComparison(operator, value),
         };
 
-      case 'a':
-      case 'artist': {
+      case "a":
+      case "artist": {
         // For artist searches, add a where clause to printings to filter them
         const artistFilter = {
           artist: {
             contains: value,
-            mode: 'insensitive'
-          }
+            mode: "insensitive",
+          },
         };
         this.printingsWhere = artistFilter;
         return {
           printings: {
-            some: artistFilter
-          }
+            some: artistFilter,
+          },
         };
       }
 
@@ -168,30 +180,32 @@ export class QueryBuilder {
   }
 
   private buildColorQuery(operator: string, colors: string): any {
-    const colorSet = new Set(colors.toUpperCase().split(''));
+    const colorSet = new Set(colors.toUpperCase().split(""));
 
-    switch(operator) {
-      case '=':
+    switch (operator) {
+      case "=":
         return {
           colors: {
-            equals: Array.from(colorSet)
-          }
+            equals: Array.from(colorSet),
+          },
         };
 
-      case ':':
-      case '>=':
+      case ":":
+      case ">=":
         return {
           colors: {
-            hasEvery: Array.from(colorSet)
-          }
+            hasEvery: Array.from(colorSet),
+          },
         };
 
-      case '<=':
+      case "<=":
         return {
           colors: {
             hasSome: Array.from(colorSet),
-            none: Array.from(['W','U','B','R','G'].filter(c => !colorSet.has(c)))
-          }
+            none: Array.from(
+              ["W", "U", "B", "R", "G"].filter((c) => !colorSet.has(c))
+            ),
+          },
         };
 
       default:
@@ -201,17 +215,17 @@ export class QueryBuilder {
 
   private buildNumericComparison(operator: string, value: string): any {
     const num = parseInt(value);
-    switch(operator) {
-      case ':':
-      case '=':
+    switch (operator) {
+      case ":":
+      case "=":
         return { equals: num };
-      case '>':
+      case ">":
         return { gt: num };
-      case '>=':
+      case ">=":
         return { gte: num };
-      case '<':
+      case "<":
         return { lt: num };
-      case '<=':
+      case "<=":
         return { lte: num };
       default:
         throw new Error(`Invalid numeric operator: ${operator}`);

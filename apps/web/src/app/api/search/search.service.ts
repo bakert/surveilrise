@@ -1,6 +1,6 @@
-import { parseSearchQuery } from 'search';
-import { prisma } from 'database';
-import { DEFAULT_PAGE_SIZE } from '../../constants';
+import { parseSearchQuery } from "search";
+import { prisma } from "database";
+import { DEFAULT_PAGE_SIZE } from "../../constants";
 
 export interface SearchResult {
   query: any;
@@ -20,9 +20,13 @@ export interface SearchParams {
 }
 
 export class SearchService {
-  static async search({ query, page, pageSize = DEFAULT_PAGE_SIZE }: SearchParams): Promise<SearchResult> {
+  static async search({
+    query,
+    page,
+    pageSize = DEFAULT_PAGE_SIZE,
+  }: SearchParams): Promise<SearchResult> {
     if (!query) {
-      throw new Error('Missing query parameter');
+      throw new Error("Missing query parameter");
     }
 
     const searchQuery = parseSearchQuery(query);
@@ -30,7 +34,7 @@ export class SearchService {
     const printingsWhere = searchQuery.include?.printings.where;
 
     const total = await prisma.card.count({
-      where: whereClause
+      where: whereClause,
     });
 
     const cards = await prisma.card.findMany({
@@ -39,25 +43,25 @@ export class SearchService {
         printings: {
           where: printingsWhere,
           orderBy: {
-            releasedAt: 'desc'
-          }
-        }
+            releasedAt: "desc",
+          },
+        },
       },
       skip: (page - 1) * pageSize,
       take: pageSize,
       orderBy: {
-        name: 'asc'
-      }
+        name: "asc",
+      },
     });
 
-    const transformedCards = cards.map(card => ({
+    const transformedCards = cards.map((card) => ({
       id: card.oracleId,
       name: card.name,
       imgUrl: card.printings[0]?.imageUrl || null,
       debug: {
         rawCard: card,
-        printings: card.printings
-      }
+        printings: card.printings,
+      },
     }));
 
     return {
@@ -67,8 +71,8 @@ export class SearchService {
       debug: {
         whereClause,
         page,
-        pageSize
-      }
+        pageSize,
+      },
     };
   }
 }

@@ -1,2 +1,2 @@
 export * from "./client";
-export * as scryfall from './scryfall';
+export * as scryfall from "./scryfall";

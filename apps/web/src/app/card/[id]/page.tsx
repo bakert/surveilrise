@@ -12,7 +12,9 @@ interface PageProps {
   };
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const card = await getCardDetails(params.id);
 
   if (!card) {
@@ -37,7 +39,7 @@ async function getCardDetails(id: string) {
       include: {
         printings: {
           orderBy: {
-            releasedAt: 'desc',
+            releasedAt: "desc",
           },
           take: 1,
         },
@@ -53,18 +55,18 @@ async function getCardDetails(id: string) {
     return {
       id: card.oracleId,
       name: card.name,
-      imgUrl: latestPrinting?.imageUrl || '',
-      manaCost: card.manaCost || '',
+      imgUrl: latestPrinting?.imageUrl || "",
+      manaCost: card.manaCost || "",
       type: card.typeLine,
-      oracleText: card.oracleText || '',
+      oracleText: card.oracleText || "",
       colors: card.colors || [],
-      rarity: latestPrinting?.rarity || '',
-      set: latestPrinting?.setCode || '',
-      setName: latestPrinting?.setCode || '',
-      collectorNumber: latestPrinting?.collectorNumber || '',
+      rarity: latestPrinting?.rarity || "",
+      set: latestPrinting?.setCode || "",
+      setName: latestPrinting?.setCode || "",
+      collectorNumber: latestPrinting?.collectorNumber || "",
     };
   } catch (error) {
-    console.error('Error fetching card:', error);
+    console.error("Error fetching card:", error);
     return null;
   }
 }
@@ -83,7 +85,9 @@ export default async function CardPage({ params }: PageProps) {
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="space-y-1">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-3xl font-bold text-white">{card.name}</CardTitle>
+                <CardTitle className="text-3xl font-bold text-white">
+                  {card.name}
+                </CardTitle>
                 <div className="text-2xl text-gray-300">{card.manaCost}</div>
               </div>
               <div className="flex items-center space-x-2 text-gray-400">
@@ -106,7 +110,9 @@ export default async function CardPage({ params }: PageProps) {
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-700 rounded-lg flex items-center justify-center p-4">
-                      <span className="text-gray-400 text-sm text-center">No image found</span>
+                      <span className="text-gray-400 text-sm text-center">
+                        No image found
+                      </span>
                     </div>
                   )}
                 </div>
@@ -128,7 +134,9 @@ export default async function CardPage({ params }: PageProps) {
 
                   {/* Oracle Text */}
                   <div className="prose prose-invert max-w-none">
-                    <p className="text-gray-300 whitespace-pre-line">{card.oracleText}</p>
+                    <p className="text-gray-300 whitespace-pre-line">
+                      {card.oracleText}
+                    </p>
                   </div>
 
                   {/* Set Information */}

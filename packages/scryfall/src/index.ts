@@ -1,7 +1,7 @@
 import { access, readFile, writeFile } from "fs/promises";
 import path from "path";
-import { scryfall } from 'database';
-import type { ScryfallCard } from 'types';
+import { scryfall } from "database";
+import type { ScryfallCard } from "types";
 
 const SCRYFALL_BULK_URL = "https://api.scryfall.com/bulk-data";
 
@@ -16,9 +16,9 @@ type BulkDataMeta = {
 async function main() {
   console.log("Running Scryfall ingestion...");
 
-  const quickMode = process.argv.includes('--quick');
+  const quickMode = process.argv.includes("--quick");
   if (quickMode) {
-    console.log('Running in quick mode - will only import first 2000 cards');
+    console.log("Running in quick mode - will only import first 2000 cards");
   }
 
   const defaultCardsMeta = await fetchBulkDataMeta();
@@ -38,10 +38,15 @@ async function main() {
 
 async function fetchBulkDataMeta() {
   const bulkDataRes = await fetch(SCRYFALL_BULK_URL);
-  if (!bulkDataRes.ok) throw new Error(`Failed to fetch bulk data info: ${bulkDataRes.statusText}`);
+  if (!bulkDataRes.ok)
+    throw new Error(
+      `Failed to fetch bulk data info: ${bulkDataRes.statusText}`
+    );
 
-  const bulkDataMeta = await bulkDataRes.json() as BulkDataMeta;
-  const defaultCardsMeta = bulkDataMeta.data.find((d) => d.type === "default_cards");
+  const bulkDataMeta = (await bulkDataRes.json()) as BulkDataMeta;
+  const defaultCardsMeta = bulkDataMeta.data.find(
+    (d) => d.type === "default_cards"
+  );
   if (!defaultCardsMeta) throw new Error("Default cards bulk data not found");
 
   return defaultCardsMeta;
@@ -49,7 +54,7 @@ async function fetchBulkDataMeta() {
 
 async function retrieveBulkData(downloadUri: string): Promise<ScryfallCard[]> {
   const filename = path.basename(new URL(downloadUri).pathname);
-  const tempPath = `${require('os').tmpdir()}/${filename}`;
+  const tempPath = `${require("os").tmpdir()}/${filename}`;
 
   try {
     await access(tempPath);
@@ -62,7 +67,7 @@ async function retrieveBulkData(downloadUri: string): Promise<ScryfallCard[]> {
     console.log(`Saved Scryfall bulk data to ${tempPath}`);
   }
 
-  const fileContents = await readFile(tempPath, 'utf-8');
+  const fileContents = await readFile(tempPath, "utf-8");
   const parsedData = JSON.parse(fileContents);
   return parsedData;
 }
