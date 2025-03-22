@@ -47,3 +47,4 @@
 - Is the search query "OR" or "AND" (no other text) an error? Or part of a card name?
 - We have vestigal regex support but we don't use it in queryBuilder
 - statValue is exported solely to test - maybe we can have a higher level test that exercises it instead and make it private again
+- Add the tests to CI and require them to pass before allowing merge
