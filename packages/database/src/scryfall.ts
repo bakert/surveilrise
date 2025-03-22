@@ -98,7 +98,7 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
             releasedAt: new Date(printing.released_at),
             collectorNumber: printing.collector_number,
             rarity: printing.rarity,
-            imageUrl: printing.image_uris?.normal ?? '',
+            imageUrl: printing.image_uris?.normal ?? null,
             usd: printing.prices.usd ? parseFloat(printing.prices.usd) : null,
             usdFoil: printing.prices.usd_foil ? parseFloat(printing.prices.usd_foil) : null,
             usdEtched: printing.prices.usd_etched ? parseFloat(printing.prices.usd_etched) : null,
@@ -110,7 +110,7 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
           update: {
             releasedAt: new Date(printing.released_at),
             rarity: printing.rarity,
-            imageUrl: printing.image_uris?.normal ?? '',
+            imageUrl: printing.image_uris?.normal ?? null,
             usd: printing.prices.usd ? parseFloat(printing.prices.usd) : null,
             usdFoil: printing.prices.usd_foil ? parseFloat(printing.prices.usd_foil) : null,
             usdEtched: printing.prices.usd_etched ? parseFloat(printing.prices.usd_etched) : null,

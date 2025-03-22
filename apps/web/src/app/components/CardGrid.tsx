@@ -10,7 +10,7 @@ import { DEFAULT_PAGE_SIZE } from '../constants';
 interface Card {
   id: string;
   name: string;
-  imgUrl: string;
+  imgUrl: string | null;
 }
 
 interface SearchResponse {
@@ -126,13 +126,19 @@ export function CardGrid() {
               router.push(`/card/${card.id}`);
             }}
           >
-            <Image
-              src={card.imgUrl}
-              alt={card.name}
-              fill
-              className="object-contain rounded-lg"
-              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-            />
+            {card.imgUrl ? (
+              <Image
+                src={card.imgUrl}
+                alt={card.name}
+                fill
+                className="object-contain rounded-lg"
+                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-700 rounded-lg flex items-center justify-center p-4">
+                <span className="text-gray-400 text-sm text-center">{card.name}</span>
+              </div>
+            )}
           </div>
         ))}
       </div>

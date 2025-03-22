@@ -27,6 +27,7 @@ export class SearchService {
 
     const searchQuery = parseSearchQuery(query);
     const whereClause = searchQuery.where;
+    const printingsWhere = searchQuery.include?.printings.where;
 
     const total = await prisma.card.count({
       where: whereClause
@@ -36,6 +37,7 @@ export class SearchService {
       where: whereClause,
       include: {
         printings: {
+          where: printingsWhere,
           orderBy: {
             releasedAt: 'desc'
           }

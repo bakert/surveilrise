@@ -96,13 +96,19 @@ export default async function CardPage({ params }: PageProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Card Image */}
                 <div className="relative aspect-[2.5/3.5]">
-                  <Image
-                    src={card.imgUrl}
-                    alt={card.name}
-                    fill
-                    className="object-contain rounded-lg"
-                    priority
-                  />
+                  {card.imgUrl ? (
+                    <Image
+                      src={card.imgUrl}
+                      alt={card.name}
+                      fill
+                      className="object-contain rounded-lg"
+                      priority
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-700 rounded-lg flex items-center justify-center p-4">
+                      <span className="text-gray-400 text-sm text-center">No image found</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Card Details */}

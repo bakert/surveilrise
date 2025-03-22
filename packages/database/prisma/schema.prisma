@@ -36,7 +36,7 @@ model Printing {
   releasedAt      DateTime
   collectorNumber String
   rarity          String
-  imageUrl        String
+  imageUrl        String?
   usd             Decimal?
   usdFoil         Decimal?
   usdEtched       Decimal?
