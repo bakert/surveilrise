@@ -1,9 +1,19 @@
-import { Token, SearchQuery, Expression, Key, StringToken, BooleanOperator, Operator } from './types';
+import { SearchQuery, Expression, Key, StringToken, BooleanOperator, Operator, WhereClause } from './types';
 
 export class QueryBuilder {
+  private printingsWhere: WhereClause = {};
+
   build(expression: Expression): SearchQuery {
     const query: SearchQuery = {
-      where: {}
+      where: {},
+      include: {
+        printings: {
+          where: this.printingsWhere,
+          orderBy: {
+            releasedAt: 'desc'
+          }
+        }
+      }
     };
 
     // Process tokens in order
@@ -16,7 +26,10 @@ export class QueryBuilder {
         // Recursively process nested expressions
         const subQuery = this.build(token);
         if (!query.where.AND) query.where.AND = [];
-        query.where.AND.push(subQuery.where);
+        // Flatten the criteria from the subquery
+        if (subQuery.where.AND) {
+          query.where.AND.push(...subQuery.where.AND);
+        }
       }
       else if (token instanceof Key) {
         // Process key-operator-value triplet
@@ -64,6 +77,14 @@ export class QueryBuilder {
       i++;
     }
 
+    // Update printings filter if one was set during query building
+    if (this.printingsWhere) {
+      if (!query.include) query.include = {};
+      if (!query.include.printings) query.include.printings = {};
+      query.include.printings.where = this.printingsWhere;
+    }
+
+    console.log('Generated query:', JSON.stringify(query, null, 2));
     return query;
   }
 
@@ -110,13 +131,13 @@ export class QueryBuilder {
       case 'pow':
       case 'power':
         return {
-          power: this.buildNumericComparison(operator, value)
+          powerValue: this.buildNumericComparison(operator, value)
         };
 
       case 'tou':
       case 'toughness':
         return {
-          toughness: this.buildNumericComparison(operator, value)
+          toughnessValue: this.buildNumericComparison(operator, value)
         };
 
       case 'mv':
@@ -125,16 +146,32 @@ export class QueryBuilder {
           manaValue: this.buildNumericComparison(operator, value)
         };
 
+      case 'a':
+      case 'artist': {
+        // For artist searches, add a where clause to printings to filter them
+        const artistFilter = {
+          artist: {
+            contains: value,
+            mode: 'insensitive'
+          }
+        };
+        this.printingsWhere = artistFilter;
+        return {
+          printings: {
+            some: artistFilter
+          }
+        };
+      }
+
       default:
         throw new Error(`Unknown field: ${field}`);
     }
   }
 
   private buildColorQuery(operator: string, colors: string): any {
-    const colorSet = new Set(colors.split(''));
+    const colorSet = new Set(colors.toUpperCase().split(''));
 
     switch(operator) {
-      case ':':
       case '=':
         return {
           colors: {
@@ -142,6 +179,7 @@ export class QueryBuilder {
           }
         };
 
+      case ':':
       case '>=':
         return {
           colors: {

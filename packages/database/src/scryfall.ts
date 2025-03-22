@@ -50,6 +50,10 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
               oracleText: printing.oracle_text,
               colors: printing.colors,
               oracleId: printing.oracle_id,
+              power: printing.power,
+              powerValue: printing.power ? parseFloat(printing.power) : null,
+              toughness: printing.toughness,
+              toughnessValue: printing.toughness ? parseFloat(printing.toughness) : null,
             },
             update: {
               name: printing.name,
@@ -57,6 +61,10 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
               typeLine: printing.type_line,
               oracleText: printing.oracle_text,
               colors: printing.colors,
+              power: printing.power,
+              powerValue: printing.power ? parseFloat(printing.power) : null,
+              toughness: printing.toughness,
+              toughnessValue: printing.toughness ? parseFloat(printing.toughness) : null,
             }
           });
 
@@ -97,6 +105,7 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
             eur: printing.prices.eur ? parseFloat(printing.prices.eur) : null,
             eurFoil: printing.prices.eur_foil ? parseFloat(printing.prices.eur_foil) : null,
             tix: printing.prices.tix ? parseFloat(printing.prices.tix) : null,
+            artist: printing.artist ?? '',
           },
           update: {
             releasedAt: new Date(printing.released_at),
@@ -108,6 +117,7 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
             eur: printing.prices.eur ? parseFloat(printing.prices.eur) : null,
             eurFoil: printing.prices.eur_foil ? parseFloat(printing.prices.eur_foil) : null,
             tix: printing.prices.tix ? parseFloat(printing.prices.tix) : null,
+            artist: printing.artist ?? '',
           }
         });
       }

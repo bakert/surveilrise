@@ -35,3 +35,10 @@
 - Find a better place for reset-scryfall and test-query if we're keeping them around
 - Unit tests and functional tests should have commands in the packages and even maybe at the top level
 - Should queryBuilder just be called query?
+- Spec mentions `p:2` (in the example API call) but this is not a valid Scryfall query. Perhaps it should be.
+- Infinity Elemental is a good edge case test (for power)
+- There are large numbers of card properties and related search syntax that are not mentioned in the spec that we could implement
+- Support "temur" and other non-char values for color queries
+- Where we are throwing basic Error instead throw an Error of our own
+- Have the search integration test explain that you need to build a local db for it to work if there isn't one
+- Ability to turn on query logging in the Prisma client via DEBUG=1 or similar env var

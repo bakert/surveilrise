@@ -135,7 +135,7 @@ export class Criterion extends Token {
 
 export class Key extends Token {
   // Strict substrings of other operators must appear later in the list
-  protected static values = ['coloridentity', 'fulloracle', 'commander', 'supertype', 'toughness', 'identity', 'playable', 'produces', 'edition', 'subtype', 'loyalty', 'format', 'oracle', 'rarity', 'color', 'legal', 'power', 'super', 'mana', 'name', 'text', 'type', 'cmc', 'loy', 'pow', 'set', 'sub', 'tou', 'cid', 'not', 'ci', 'fo', 'id', 'mv', 'c', 'e', 'f', 'm', 'r', 's', 'o', 't', 'is', 'p'];
+  protected static values = ['coloridentity', 'fulloracle', 'commander', 'supertype', 'toughness', 'identity', 'playable', 'produces', 'edition', 'subtype', 'loyalty', 'artist', 'format', 'oracle', 'rarity', 'color', 'legal', 'power', 'super', 'mana', 'name', 'text', 'type', 'cmc', 'loy', 'pow', 'set', 'sub', 'tou', 'cid', 'not', 'ci', 'fo', 'id', 'mv', 'a', 'c', 'e', 'f', 'm', 'r', 's', 'o', 't', 'is', 'p'];
 
   constructor(chars: string) {
     super(chars);
@@ -186,10 +186,19 @@ export class Regex extends StringToken {
 
 export interface SearchQuery {
   where: WhereClause;
+  include?: {
+    printings?: {
+      where?: WhereClause;
+      orderBy?: {
+        releasedAt?: 'desc' | 'asc'
+      },
+      take?: number
+    }
+  };
 }
 
 export interface WhereClause {
-  AND?: WhereClause[];
-  OR?: WhereClause[];
+  AND?: Array<WhereClause | Record<string, any>>;
+  OR?: Array<WhereClause | Record<string, any>>;
   [key: string]: any;
 }

@@ -14,13 +14,19 @@ describe('QueryBuilder', () => {
     const query = builder.build(tokens);
 
     expect(query).toEqual({
+      include: {
+        printings: {
+          where: {},
+          orderBy: {
+            releasedAt: 'desc'
+          }
+        }
+      },
       where: {
-        OR: [{
-          AND: [{
-            colors: {
-              has: 'r'
-            }
-          }]
+        AND: [{
+          colors: {
+            hasEvery: ['R']
+          }
         }]
       }
     });
@@ -32,32 +38,74 @@ describe('QueryBuilder', () => {
         new Key('c'),
         new Operator(':'),
         new StringToken('r'),
-        new Key('f'),
+        new Key('t'),
         new Operator(':'),
-        new StringToken('vintage')
+        new StringToken('pirate')
       ])
     ]);
 
     const query = builder.build(tokens);
 
     expect(query).toEqual({
+      include: {
+        printings: {
+          where: {},
+          orderBy: {
+            releasedAt: 'desc'
+          }
+        }
+      },
       where: {
-        OR: [{
-          AND: [
-            {
-              colors: {
-                has: 'r'
-              }
-            },
-            {
-              legalities: {
-                some: {
-                  format: 'vintage',
-                  legal: true
-                }
+        AND: [
+          {
+            colors: {
+              hasEvery: ['R']
+            }
+          },
+          {
+            typeLine: {
+              contains: 'pirate',
+              mode: 'insensitive'
+            }
+          }
+        ]
+      }
+    });
+  });
+
+  it('should build an artist search', () => {
+    const tokens = new Expression([
+      new Key('a'),
+      new Operator(':'),
+      new StringToken('john avon')
+    ]);
+
+    const query = builder.build(tokens);
+
+    expect(query).toEqual({
+      include: {
+        printings: {
+          where: {
+            artist: {
+              contains: 'john avon',
+              mode: 'insensitive'
+            }
+          },
+          orderBy: {
+            releasedAt: 'desc'
+          }
+        }
+      },
+      where: {
+        AND: [{
+          printings: {
+            some: {
+              artist: {
+                contains: 'john avon',
+                mode: 'insensitive'
               }
             }
-          ]
+          }
         }]
       }
     });
