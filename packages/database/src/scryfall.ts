@@ -1,6 +1,6 @@
 import { prisma } from './client';
 import type { ScryfallCard } from 'types';
-
+import { Decimal } from '@prisma/client/runtime/library';
 export async function getLastUpdated(): Promise<string | null> {
   const meta = await prisma.scryfallMeta.findFirst({
     where: { key: 'last_updated' },
@@ -137,10 +137,13 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
   });
 }
 
-export function statValue(stat: string | undefined): number | null {
+export function statValue(stat: string | undefined): Decimal | null {
   if (stat === undefined) return null;
-  if (stat === '∞') return Number.MAX_VALUE;
+  if (stat === '∞') return new Decimal('1e34'); // Store a huge value that fits in numeric(65,30) so > and < work with sane inputs.
   const cleaned = stat.replace(/^[^0-9.+-]+/, '');
-  const value = parseFloat(cleaned);
-  return isNaN(value) ? 0 : value;
+  try {
+    return new Decimal(cleaned);
+  } catch (e) {
+    return new Decimal(0);
+  }
 }
