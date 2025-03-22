@@ -44,3 +44,5 @@
 - Ability to turn on query logging in the Prisma client via DEBUG=1 or similar env var
 - `pow>999999999999999999999999999999999999` does not find Infinity Elemental because of the hacky way we represent infinity. But I don't think it's worth moving to FLOAT to get psql's Infinity constant.
 - Exclude art cards/tokens/maybe funny cards either by default or from the app entirely?
+- Is the search query "OR" or "AND" (no other text) an error? Or part of a card name?
+- We have vestigal regex support but we don't use it in queryBuilder
