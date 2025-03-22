@@ -24,10 +24,10 @@ async function clearEntireDatabase() {
     WHERE schemaname = 'public'`;
 
   for (const {tablename} of result) {
-    const count = await prisma.$executeRaw(
+    await prisma.$executeRaw(
       Prisma.sql`TRUNCATE TABLE "${Prisma.raw(tablename)}" CASCADE`
     );
-    console.log(`Cleared table ${tablename} with ${count} rows`);
+    console.log(`Cleared table ${tablename}`);
   }
   console.log('Cleared entire database');
 }
