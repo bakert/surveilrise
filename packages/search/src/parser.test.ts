@@ -1,9 +1,16 @@
-import { BooleanOperator, Expression, Key, Operator, StringToken, Regex, InvalidSearchError, InvalidTokenError} from './types';
-import { parseQuery } from './parser';
+import {
+  BooleanOperator,
+  Expression,
+  Key,
+  Operator,
+  StringToken,
+  InvalidSearchError,
+} from "./types";
+import { parseQuery } from "./parser";
 
-describe('SearchParser', () => {
-  it('should parse a simple field-value pair', () => {
-    const expression = parseQuery('c:r');
+describe("SearchParser", () => {
+  it("should parse a simple field-value pair", () => {
+    const expression = parseQuery("c:r");
 
     expect(expression.tokens).toHaveLength(3);
     expect(expression.tokens[0]).toBeInstanceOf(Key);
@@ -11,8 +18,8 @@ describe('SearchParser', () => {
     expect(expression.tokens[2]).toBeInstanceOf(StringToken);
   });
 
-  it('should parse a grouped query', () => {
-    const expression = parseQuery('(c:r f:vintage)');
+  it("should parse a grouped query", () => {
+    const expression = parseQuery("(c:r f:vintage)");
 
     expect(expression.tokens).toHaveLength(1);
     expect(expression.tokens[0]).toBeInstanceOf(Expression);
@@ -26,8 +33,8 @@ describe('SearchParser', () => {
     expect(innerTokens[5]).toBeInstanceOf(StringToken);
   });
 
-  it('should handle multiple groups with OR', () => {
-    const expression = parseQuery('(c:r f:vintage) OR (c:b f:legacy)');
+  it("should handle multiple groups with OR", () => {
+    const expression = parseQuery("(c:r f:vintage) OR (c:b f:legacy)");
 
     expect(expression.tokens).toHaveLength(3);
     expect(expression.tokens[0]).toBeInstanceOf(Expression);
@@ -35,16 +42,16 @@ describe('SearchParser', () => {
     expect(expression.tokens[2]).toBeInstanceOf(Expression);
   });
 
-  it('should parse a quoted string', () => {
+  it("should parse a quoted string", () => {
     const expression = parseQuery('"quoted string"');
 
     expect(expression.tokens).toHaveLength(1);
     expect(expression.tokens[0]).toBeInstanceOf(StringToken);
     const token = expression.tokens[0] as StringToken;
-    expect(token.value()).toBe('quoted string');
+    expect(token.value()).toBe("quoted string");
   });
 
-  it('should parse an artist search', () => {
+  it("should parse an artist search", () => {
     const expression = parseQuery('artist:"john avon"');
 
     expect(expression.tokens).toHaveLength(3);
@@ -56,24 +63,23 @@ describe('SearchParser', () => {
     const operatorToken = expression.tokens[1] as Operator;
     const valueToken = expression.tokens[2] as StringToken;
 
-    expect(artistToken.value()).toBe('artist');
-    expect(operatorToken.value()).toBe(':');
-    expect(valueToken.value()).toBe('john avon');
+    expect(artistToken.value()).toBe("artist");
+    expect(operatorToken.value()).toBe(":");
+    expect(valueToken.value()).toBe("john avon");
   });
 
-
-  it('should handle invalid/malformed queries by throwing', () => {
-    expect(() => parseQuery('(')).toThrow(InvalidSearchError);
-    expect(() => parseQuery(')')).toThrow(InvalidSearchError);
+  it("should handle invalid/malformed queries by throwing", () => {
+    expect(() => parseQuery("(")).toThrow(InvalidSearchError);
+    expect(() => parseQuery(")")).toThrow(InvalidSearchError);
     expect(() => parseQuery('"unclosed quote')).toThrow(InvalidSearchError);
-    expect(() => parseQuery('c:')).toThrow(InvalidSearchError);
-    expect(() => parseQuery('((c:r)')).toThrow(InvalidSearchError);
-    expect(() => parseQuery('(c:r))')).toThrow(InvalidSearchError);
-    expect(() => parseQuery('(c:r (t:creature)')).toThrow(InvalidSearchError);
+    expect(() => parseQuery("c:")).toThrow(InvalidSearchError);
+    expect(() => parseQuery("((c:r)")).toThrow(InvalidSearchError);
+    expect(() => parseQuery("(c:r))")).toThrow(InvalidSearchError);
+    expect(() => parseQuery("(c:r (t:creature)")).toThrow(InvalidSearchError);
   });
 
-  it('should handle weird spacing', () => {
-    const expression = parseQuery('  c:r    f:vintage  ');
+  it("should handle weird spacing", () => {
+    const expression = parseQuery("  c:r    f:vintage  ");
 
     expect(expression.tokens).toHaveLength(6);
     expect(expression.tokens[0]).toBeInstanceOf(Key);
@@ -84,8 +90,8 @@ describe('SearchParser', () => {
     expect(expression.tokens[5]).toBeInstanceOf(StringToken);
   });
 
-  it('should handle nested groups', () => {
-    const expression = parseQuery('(c:r OR (t:creature power:3))');
+  it("should handle nested groups", () => {
+    const expression = parseQuery("(c:r OR (t:creature power:3))");
 
     expect(expression.tokens).toHaveLength(1);
     expect(expression.tokens[0]).toBeInstanceOf(Expression);
@@ -114,15 +120,17 @@ describe('SearchParser', () => {
     const powerOp = innerExpr.tokens[4] as Operator;
     const powerValue = innerExpr.tokens[5] as StringToken;
 
-    expect(typeToken.value()).toBe('t');
-    expect(typeOp.value()).toBe(':');
-    expect(typeValue.value()).toBe('creature');
-    expect(powerToken.value()).toBe('power');
-    expect(powerOp.value()).toBe(':');
-    expect(powerValue.value()).toBe('3');
+    expect(typeToken.value()).toBe("t");
+    expect(typeOp.value()).toBe(":");
+    expect(typeValue.value()).toBe("creature");
+    expect(powerToken.value()).toBe("power");
+    expect(powerOp.value()).toBe(":");
+    expect(powerValue.value()).toBe("3");
   });
-  it('should handle complex queries', () => {
-    const expression = parseQuery('(c:r OR c:u) t:creature (power:3 OR toughness:3) -is:digital artist:"john avon"');
+  it("should handle complex queries", () => {
+    const expression = parseQuery(
+      '(c:r OR c:u) t:creature (power:3 OR toughness:3) -is:digital artist:"john avon"'
+    );
 
     expect(expression.tokens).toHaveLength(12);
     expect(expression.tokens[0]).toBeInstanceOf(Expression);
@@ -163,15 +171,15 @@ describe('SearchParser', () => {
     const powerToken = statsExpr.tokens[0] as Key;
     const powerOp = statsExpr.tokens[1] as Operator;
     const powerValue = statsExpr.tokens[2] as StringToken;
-    expect(powerToken.value()).toBe('power');
-    expect(powerOp.value()).toBe(':');
-    expect(powerValue.value()).toBe('3');
+    expect(powerToken.value()).toBe("power");
+    expect(powerOp.value()).toBe(":");
+    expect(powerValue.value()).toBe("3");
 
     const toughnessToken = statsExpr.tokens[4] as Key;
     const toughnessOp = statsExpr.tokens[5] as Operator;
     const toughnessValue = statsExpr.tokens[6] as StringToken;
-    expect(toughnessToken.value()).toBe('toughness');
-    expect(toughnessOp.value()).toBe(':');
-    expect(toughnessValue.value()).toBe('3');
+    expect(toughnessToken.value()).toBe("toughness");
+    expect(toughnessOp.value()).toBe(":");
+    expect(toughnessValue.value()).toBe("3");
   });
 });

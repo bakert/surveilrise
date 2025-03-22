@@ -5,6 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { prisma } from "database";
+import type {
+  Card as PrismaCard,
+  Printing,
+  PrismaClient,
+} from "@prisma/client";
 
 interface PageProps {
   params: {
@@ -12,7 +17,29 @@ interface PageProps {
   };
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+interface CardDetails {
+  id: string;
+  name: string;
+  imgUrl: string;
+  manaCost: string;
+  type: string;
+  oracleText: string;
+  colors: string[];
+  rarity: string;
+  set: string;
+  setName: string;
+  collectorNumber: string;
+}
+
+type CardWithPrintings = PrismaCard & {
+  printings: Printing[];
+};
+
+const typedPrisma = prisma as PrismaClient;
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const card = await getCardDetails(params.id);
 
   if (!card) {
@@ -28,21 +55,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-async function getCardDetails(id: string) {
+async function getCardDetails(id: string): Promise<CardDetails | null> {
   try {
-    const card = await prisma.card.findUnique({
+    const card = (await typedPrisma.card.findUnique({
       where: {
         oracleId: id,
       },
       include: {
         printings: {
           orderBy: {
-            releasedAt: 'desc',
+            releasedAt: "desc",
           },
           take: 1,
         },
       },
-    });
+    })) as CardWithPrintings | null;
 
     if (!card) {
       return null;
@@ -53,23 +80,25 @@ async function getCardDetails(id: string) {
     return {
       id: card.oracleId,
       name: card.name,
-      imgUrl: latestPrinting?.imageUrl || '',
-      manaCost: card.manaCost || '',
+      imgUrl: latestPrinting?.imageUrl || "",
+      manaCost: card.manaCost || "",
       type: card.typeLine,
-      oracleText: card.oracleText || '',
+      oracleText: card.oracleText || "",
       colors: card.colors || [],
-      rarity: latestPrinting?.rarity || '',
-      set: latestPrinting?.setCode || '',
-      setName: latestPrinting?.setCode || '',
-      collectorNumber: latestPrinting?.collectorNumber || '',
+      rarity: latestPrinting?.rarity || "",
+      set: latestPrinting?.setCode || "",
+      setName: latestPrinting?.setCode || "",
+      collectorNumber: latestPrinting?.collectorNumber || "",
     };
   } catch (error) {
-    console.error('Error fetching card:', error);
+    console.error("Error fetching card:", error);
     return null;
   }
 }
 
-export default async function CardPage({ params }: PageProps) {
+export default async function CardPage({
+  params,
+}: PageProps): Promise<JSX.Element> {
   const card = await getCardDetails(params.id);
 
   if (!card) {
@@ -83,7 +112,9 @@ export default async function CardPage({ params }: PageProps) {
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="space-y-1">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-3xl font-bold text-white">{card.name}</CardTitle>
+                <CardTitle className="text-3xl font-bold text-white">
+                  {card.name}
+                </CardTitle>
                 <div className="text-2xl text-gray-300">{card.manaCost}</div>
               </div>
               <div className="flex items-center space-x-2 text-gray-400">
@@ -106,7 +137,9 @@ export default async function CardPage({ params }: PageProps) {
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-700 rounded-lg flex items-center justify-center p-4">
-                      <span className="text-gray-400 text-sm text-center">No image found</span>
+                      <span className="text-gray-400 text-sm text-center">
+                        No image found
+                      </span>
                     </div>
                   )}
                 </div>
@@ -128,7 +161,9 @@ export default async function CardPage({ params }: PageProps) {
 
                   {/* Oracle Text */}
                   <div className="prose prose-invert max-w-none">
-                    <p className="text-gray-300 whitespace-pre-line">{card.oracleText}</p>
+                    <p className="text-gray-300 whitespace-pre-line">
+                      {card.oracleText}
+                    </p>
                   </div>
 
                   {/* Set Information */}

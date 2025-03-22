@@ -1,40 +1,45 @@
-export type TokenType = 'FIELD' | 'VALUE' | 'OPERATOR' | 'GROUP_START' | 'GROUP_END';
+export type TokenType =
+  | "FIELD"
+  | "VALUE"
+  | "OPERATOR"
+  | "GROUP_START"
+  | "GROUP_END";
 
 export const enum State {
-  Expression = 'Expression',
-  Operator = 'Operator',
-  Term = 'Term',
-  String = 'String',
-  UnquotedString = 'UnquotedString',
-  QuotedString = 'QuotedString',
-  Regex = 'Regex',
+  Expression = "Expression",
+  Operator = "Operator",
+  Term = "Term",
+  String = "String",
+  UnquotedString = "UnquotedString",
+  QuotedString = "QuotedString",
+  Regex = "Regex",
 }
 
 export class InvalidSearchError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'InvalidSearchError';
+    this.name = "InvalidSearchError";
   }
 }
 
 export class InvalidTokenError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'UnexpectedTokenError';
+    this.name = "UnexpectedTokenError";
   }
 }
 
 export class InvalidModeException extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'InvalidModeException';
+    this.name = "InvalidModeException";
   }
 }
 
 export class KeyError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'KeyError';
+    this.name = "KeyError";
   }
 }
 
@@ -47,11 +52,11 @@ export class Expression {
 }
 
 export abstract class Token {
-  protected val: string = '';
+  protected val: string = "";
   protected static values: string[] = [];
 
   static match(chars: string): boolean {
-    return this.find(chars) !== '';
+    return this.find(chars) !== "";
   }
 
   static tokenLength(chars: string): number {
@@ -65,10 +70,10 @@ export abstract class Token {
         return value;
       }
     }
-    return '';
+    return "";
   }
 
-  constructor(chars: string) {
+  constructor() {
     // Each derived class will set val in its own constructor
   }
 
@@ -87,28 +92,31 @@ export abstract class Token {
 
 export class BooleanOperator extends Token {
   // Strict substrings of other operators must appear later in the list
-  protected static values = ['AND', 'OR', 'NOT', '-'];
+  protected static values = ["AND", "OR", "NOT", "-"];
 
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = BooleanOperator.find(chars);
   }
 
   static find(chars: string): string {
     const s = chars.toString();
     for (const value of this.values) {
-      if (s.toLowerCase().startsWith(value.toLowerCase() + ' ') ||
-          (s.toLowerCase().startsWith(value.toLowerCase()) && s.length === value.length) ||
-          (value === '-' && s.startsWith('-'))) {
+      if (
+        s.toLowerCase().startsWith(value.toLowerCase() + " ") ||
+        (s.toLowerCase().startsWith(value.toLowerCase()) &&
+          s.length === value.length) ||
+        (value === "-" && s.startsWith("-"))
+      ) {
         return value;
       }
     }
-    return '';
+    return "";
   }
 
   value(): string {
-    if (this.val === '-') {
-      return 'NOT';
+    if (this.val === "-") {
+      return "NOT";
     }
     return this.val;
   }
@@ -116,7 +124,7 @@ export class BooleanOperator extends Token {
 
 export class Criterion extends Token {
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = Criterion.find(chars);
   }
 
@@ -134,27 +142,74 @@ export class Criterion extends Token {
 
 export class Key extends Token {
   // Strict substrings of other operators must appear later in the list
-  protected static values = ['coloridentity', 'fulloracle', 'commander', 'supertype', 'toughness', 'identity', 'playable', 'produces', 'edition', 'subtype', 'loyalty', 'artist', 'format', 'oracle', 'rarity', 'color', 'legal', 'power', 'super', 'mana', 'name', 'text', 'type', 'cmc', 'loy', 'pow', 'set', 'sub', 'tou', 'cid', 'not', 'ci', 'fo', 'id', 'mv', 'a', 'c', 'e', 'f', 'm', 'r', 's', 'o', 't', 'is', 'p'];
+  protected static values = [
+    "coloridentity",
+    "fulloracle",
+    "commander",
+    "supertype",
+    "toughness",
+    "identity",
+    "playable",
+    "produces",
+    "edition",
+    "subtype",
+    "loyalty",
+    "artist",
+    "format",
+    "oracle",
+    "rarity",
+    "color",
+    "legal",
+    "power",
+    "super",
+    "mana",
+    "name",
+    "text",
+    "type",
+    "cmc",
+    "loy",
+    "pow",
+    "set",
+    "sub",
+    "tou",
+    "cid",
+    "not",
+    "ci",
+    "fo",
+    "id",
+    "mv",
+    "a",
+    "c",
+    "e",
+    "f",
+    "m",
+    "r",
+    "s",
+    "o",
+    "t",
+    "is",
+    "p",
+  ];
 
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = Key.find(chars);
   }
 }
 
 export class Operator extends Token {
   // Strict substrings of other operators must appear later in the list
-  protected static values = ['<=', '>=', ':', '!', '<', '>', '='];
+  protected static values = ["<=", ">=", ":", "!", "<", ">", "="];
 
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = Operator.find(chars);
   }
 }
 
 export class StringToken extends Token {
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = StringToken.find(chars);
   }
 
@@ -182,22 +237,21 @@ export class Regex extends StringToken {
   }
 }
 
-
 export interface SearchQuery {
   where: WhereClause;
   include?: {
     printings?: {
       where?: WhereClause;
       orderBy?: {
-        releasedAt?: 'desc' | 'asc'
-      },
-      take?: number
-    }
+        releasedAt?: "desc" | "asc";
+      };
+      take?: number;
+    };
   };
 }
 
 export interface WhereClause {
-  AND?: Array<WhereClause | Record<string, any>>;
-  OR?: Array<WhereClause | Record<string, any>>;
-  [key: string]: any;
+  AND?: Array<WhereClause | Record<string, unknown>>;
+  OR?: Array<WhereClause | Record<string, unknown>>;
+  [key: string]: unknown;
 }

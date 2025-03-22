@@ -1,13 +1,31 @@
-import { parseSearchQuery } from 'search';
-import { prisma } from 'database';
-import { DEFAULT_PAGE_SIZE } from '../../constants';
+import { parseSearchQuery } from "search";
+import { prisma } from "database";
+import { DEFAULT_PAGE_SIZE } from "../../constants";
+import type { Card, Printing, Prisma, PrismaClient } from "@prisma/client";
+
+interface TransformedCard {
+  id: string;
+  name: string;
+  imgUrl: string | null;
+  debug: {
+    rawCard: Card & { printings: Printing[] };
+    printings: Printing[];
+  };
+}
 
 export interface SearchResult {
-  query: any;
-  cards: any[];
+  query: {
+    where: Prisma.CardWhereInput;
+    include?: {
+      printings: {
+        where: Prisma.PrintingWhereInput;
+      };
+    };
+  };
+  cards: TransformedCard[];
   total: number;
   debug: {
-    whereClause: any;
+    whereClause: Prisma.CardWhereInput;
     page: number;
     pageSize: number;
   };
@@ -19,45 +37,68 @@ export interface SearchParams {
   pageSize?: number;
 }
 
+interface ParsedSearchQuery {
+  where: Prisma.CardWhereInput;
+  include?: {
+    printings: {
+      where: Prisma.PrintingWhereInput;
+    };
+  };
+}
+
+type CardWithPrintings = Card & {
+  printings: Printing[];
+};
+
+const typedPrisma = prisma as PrismaClient;
+
 export class SearchService {
-  static async search({ query, page, pageSize = DEFAULT_PAGE_SIZE }: SearchParams): Promise<SearchResult> {
+  static async search({
+    query,
+    page,
+    pageSize = DEFAULT_PAGE_SIZE,
+  }: SearchParams): Promise<SearchResult> {
     if (!query) {
-      throw new Error('Missing query parameter');
+      throw new Error("Missing query parameter");
     }
 
-    const searchQuery = parseSearchQuery(query);
+    const searchQuery = parseSearchQuery(query) as ParsedSearchQuery;
     const whereClause = searchQuery.where;
     const printingsWhere = searchQuery.include?.printings.where;
 
-    const total = await prisma.card.count({
-      where: whereClause
+    const total = await typedPrisma.card.count({
+      where: whereClause,
     });
 
-    const cards = await prisma.card.findMany({
+    const prismaQuery = {
       where: whereClause,
       include: {
         printings: {
           where: printingsWhere,
           orderBy: {
-            releasedAt: 'desc'
-          }
-        }
+            releasedAt: "desc",
+          },
+        },
       },
       skip: (page - 1) * pageSize,
       take: pageSize,
       orderBy: {
-        name: 'asc'
-      }
-    });
+        name: "asc",
+      },
+    } as const;
 
-    const transformedCards = cards.map(card => ({
+    const cards = (await typedPrisma.card.findMany(
+      prismaQuery
+    )) as CardWithPrintings[];
+
+    const transformedCards: TransformedCard[] = cards.map((card) => ({
       id: card.oracleId,
       name: card.name,
       imgUrl: card.printings[0]?.imageUrl || null,
       debug: {
         rawCard: card,
-        printings: card.printings
-      }
+        printings: card.printings,
+      },
     }));
 
     return {
@@ -67,8 +108,8 @@ export class SearchService {
       debug: {
         whereClause,
         page,
-        pageSize
-      }
+        pageSize,
+      },
     };
   }
 }
