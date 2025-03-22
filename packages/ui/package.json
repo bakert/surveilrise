@@ -16,7 +16,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "env": "*"
+    "env": "1.0.0"
   },
   "peerDependencies": {
     "react": "^18.2.0"

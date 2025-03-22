@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SearchService, type SearchResult } from "./search.service";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   request: NextRequest
 ): Promise<NextResponse<SearchResult | { error: string }>> {
