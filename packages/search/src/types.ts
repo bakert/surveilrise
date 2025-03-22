@@ -189,7 +189,7 @@ export interface SearchQuery {
 }
 
 export interface WhereClause {
-  AND?: WhereClause[];
-  OR?: WhereClause[];
+  AND?: Array<WhereClause | Record<string, any>>;
+  OR?: Array<WhereClause | Record<string, any>>;
   [key: string]: any;
 }

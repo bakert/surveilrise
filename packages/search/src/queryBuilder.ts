@@ -16,7 +16,10 @@ export class QueryBuilder {
         // Recursively process nested expressions
         const subQuery = this.build(token);
         if (!query.where.AND) query.where.AND = [];
-        query.where.AND.push(subQuery.where);
+        // Flatten the criteria from the subquery
+        if (subQuery.where.AND) {
+          query.where.AND.push(...subQuery.where.AND);
+        }
       }
       else if (token instanceof Key) {
         // Process key-operator-value triplet
@@ -110,13 +113,13 @@ export class QueryBuilder {
       case 'pow':
       case 'power':
         return {
-          power: this.buildNumericComparison(operator, value)
+          powerValue: this.buildNumericComparison(operator, value)
         };
 
       case 'tou':
       case 'toughness':
         return {
-          toughness: this.buildNumericComparison(operator, value)
+          toughnessValue: this.buildNumericComparison(operator, value)
         };
 
       case 'mv':
@@ -131,10 +134,9 @@ export class QueryBuilder {
   }
 
   private buildColorQuery(operator: string, colors: string): any {
-    const colorSet = new Set(colors.split(''));
+    const colorSet = new Set(colors.toUpperCase().split(''));
 
     switch(operator) {
-      case ':':
       case '=':
         return {
           colors: {
@@ -142,6 +144,7 @@ export class QueryBuilder {
           }
         };
 
+      case ':':
       case '>=':
         return {
           colors: {

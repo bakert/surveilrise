@@ -14,7 +14,9 @@ describe('Query Integration Tests', () => {
         oracleId: true,
         name: true,
         colors: true,
-        typeLine: true
+        typeLine: true,
+        power: true,
+        toughness: true
       },
       take: 20
     });
@@ -37,7 +39,7 @@ describe('Query Integration Tests', () => {
   it('should find cards with power 2', async () => {
     const results = await runQueryTest('pow:2');
     expect(results.length).toBeGreaterThan(0);
-    expect(results.every(card => card.power === 2)).toBe(true);
+    expect(results.every(card => card.power === '2')).toBe(true);
   });
 
   it('should find cards matching "Burst Lightning"', async () => {

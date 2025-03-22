@@ -15,12 +15,10 @@ describe('QueryBuilder', () => {
 
     expect(query).toEqual({
       where: {
-        OR: [{
-          AND: [{
-            colors: {
-              has: 'r'
-            }
-          }]
+        AND: [{
+          colors: {
+            hasEvery: ['R']
+          }
         }]
       }
     });
@@ -32,9 +30,9 @@ describe('QueryBuilder', () => {
         new Key('c'),
         new Operator(':'),
         new StringToken('r'),
-        new Key('f'),
+        new Key('t'),
         new Operator(':'),
-        new StringToken('vintage')
+        new StringToken('pirate')
       ])
     ]);
 
@@ -42,23 +40,19 @@ describe('QueryBuilder', () => {
 
     expect(query).toEqual({
       where: {
-        OR: [{
-          AND: [
-            {
-              colors: {
-                has: 'r'
-              }
-            },
-            {
-              legalities: {
-                some: {
-                  format: 'vintage',
-                  legal: true
-                }
-              }
+        AND: [
+          {
+            colors: {
+              hasEvery: ['R']
             }
-          ]
-        }]
+          },
+          {
+            typeLine: {
+              contains: 'pirate',
+              mode: 'insensitive'
+            }
+          }
+        ]
       }
     });
   });
