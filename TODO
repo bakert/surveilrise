@@ -50,3 +50,4 @@
 - Add the tests to CI and require them to pass before allowing merge
 - Scryfall data ingestion was pretty darn slow on my server despite being fairly snappy on laptop, maybe make more effort to speed it up.
 - "/" on the keyboard should jump you to the search bar
+- Standardize on tsx, remove ts-node
