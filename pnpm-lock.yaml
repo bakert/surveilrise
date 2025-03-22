@@ -27,58 +27,6 @@ importers:
         specifier: ^1.9.9
         version: 1.13.4
 
-  apps/docs:
-    dependencies:
-      database:
-        specifier: 1.0.0
-        version: link:../../packages/database
-      next:
-        specifier: ^13.4.1
-        version: 13.5.8(react-dom@18.3.1)(react@18.3.1)
-      react:
-        specifier: ^18.2.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.3.1(react@18.3.1)
-      ui:
-        specifier: 1.0.0
-        version: link:../../packages/ui
-    devDependencies:
-      '@prisma/nextjs-monorepo-workaround-plugin':
-        specifier: ^4.14.1
-        version: 4.16.2
-      '@types/node':
-        specifier: ^18.11.17
-        version: 18.19.81
-      '@types/react':
-        specifier: ^18.2.5
-        version: 18.3.19
-      '@types/react-dom':
-        specifier: ^18.2.4
-        version: 18.3.5(@types/react@18.3.19)
-      autoprefixer:
-        specifier: ^10.4.13
-        version: 10.4.21(postcss@8.5.3)
-      eslint-config-custom:
-        specifier: '*'
-        version: link:../../packages/eslint-config-custom
-      postcss:
-        specifier: ^8.4.20
-        version: 8.5.3
-      tailwind-config:
-        specifier: 1.0.0
-        version: link:../../packages/tailwind-config
-      tailwindcss:
-        specifier: ^3.2.4
-        version: 3.4.17
-      tsconfig:
-        specifier: 1.0.0
-        version: link:../../packages/tsconfig
-      typescript:
-        specifier: ^4.9.4
-        version: 4.9.5
-
   apps/web:
     dependencies:
       '@radix-ui/react-dialog':

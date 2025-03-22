@@ -21,7 +21,7 @@
 - Move the ScryfallCard type out of the script because it kind of obscures the actual interesting parts by being so huge
 - Both scryfall and database need to understand ScryfallCard as it currently stands so move it somewhere shared. Or stop that being true. Importing into database from scryfall is circular.
 - Include in the README "how to connect to db", "how to run watcher while developing", "how to bring up db", "how to bring up web", etc.
-- Don't allow commit to main (github, pre-commit on local)
+- Don't allow commit to main (done on github, pre-commit on local)
 - Don't allow merge unless CI/build passes
 - Automatically merge when CI/build passes
 - Include instructions about prisma generate to get types after changing db somewhere
@@ -42,3 +42,9 @@
 - Where we are throwing basic Error instead throw an Error of our own
 - Have the search integration test explain that you need to build a local db for it to work if there isn't one
 - Ability to turn on query logging in the Prisma client via DEBUG=1 or similar env var
+- `pow>999999999999999999999999999999999999` does not find Infinity Elemental because of the hacky way we represent infinity. But I don't think it's worth moving to FLOAT to get psql's Infinity constant.
+- Exclude art cards/tokens/maybe funny cards either by default or from the app entirely?
+- Is the search query "OR" or "AND" (no other text) an error? Or part of a card name?
+- We have vestigal regex support but we don't use it in queryBuilder
+- statValue is exported solely to test - maybe we can have a higher level test that exercises it instead and make it private again
+- Add the tests to CI and require them to pass before allowing merge

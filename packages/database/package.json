@@ -21,7 +21,8 @@
     "format": "prisma format",
     "generate": "prisma generate",
     "lint": "eslint \"src/**/*.ts\"",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "test": "jest"
   },
   "dependencies": {
     "@prisma/client": "^4.14.1"

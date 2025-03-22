@@ -84,7 +84,6 @@ export class QueryBuilder {
       query.include.printings.where = this.printingsWhere;
     }
 
-    console.log('Generated query:', JSON.stringify(query, null, 2));
     return query;
   }
 

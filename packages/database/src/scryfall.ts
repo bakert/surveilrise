@@ -1,6 +1,6 @@
 import { prisma } from './client';
 import type { ScryfallCard } from 'types';
-
+import { Decimal } from '@prisma/client/runtime/library';
 export async function getLastUpdated(): Promise<string | null> {
   const meta = await prisma.scryfallMeta.findFirst({
     where: { key: 'last_updated' },
@@ -51,9 +51,9 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
               colors: printing.colors,
               oracleId: printing.oracle_id,
               power: printing.power,
-              powerValue: printing.power ? parseFloat(printing.power) : null,
+              powerValue: statValue(printing.power),
               toughness: printing.toughness,
-              toughnessValue: printing.toughness ? parseFloat(printing.toughness) : null,
+              toughnessValue: statValue(printing.toughness),
             },
             update: {
               name: printing.name,
@@ -62,9 +62,9 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
               oracleText: printing.oracle_text,
               colors: printing.colors,
               power: printing.power,
-              powerValue: printing.power ? parseFloat(printing.power) : null,
+              powerValue: statValue(printing.power),
               toughness: printing.toughness,
-              toughnessValue: printing.toughness ? parseFloat(printing.toughness) : null,
+              toughnessValue: statValue(printing.toughness),
             }
           });
 
@@ -135,4 +135,17 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
   }, {
     timeout: 1000 * 60 * 60 // 60 minute timeout
   });
+}
+
+export function statValue(stat: string | undefined): Decimal | null {
+  if (stat === undefined) return null;
+  if (stat === '∞') return new Decimal('1e34'); // Store a huge value that fits in numeric(65,30) so > and < work with sane inputs.
+  if (stat === '*' || stat === '?' || stat.trim() === '') return new Decimal(0);
+  const match = stat.match(/[+-]?\d*\.?\d+/);
+  const cleaned = match ? match[0] : '0';
+  try {
+    return new Decimal(cleaned);
+  } catch (e) {
+    return new Decimal(0);
+  }
 }

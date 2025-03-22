@@ -1,7 +1,6 @@
 import { Token, Expression, State, Key, BooleanOperator, Criterion, Operator, StringToken, Regex, InvalidTokenError, InvalidSearchError, InvalidModeException, KeyError } from './types';
 
-// BAKERT lex or parser but certainly not both
-export function lex(query: string): Expression {
+export function parseQuery(query: string): Expression {
   query = query.toLowerCase() + ' ';
   const tokens: { [depth: number]: Array<Expression | Token> } = { 0: [] };
   let depth = 0;
@@ -18,9 +17,15 @@ export function lex(query: string): Expression {
         depth += 1;
         tokens[depth] = [];
       } else if (char === ')') {
+        if (depth === 0) {
+          throw new InvalidSearchError(`Unexpected closing parenthesis at character ${position} in ${query}`);
+        }
         const expression = new Expression(tokens[depth]);
         delete tokens[depth];
         depth -= 1;
+        if (!tokens[depth]) {
+          throw new InvalidSearchError(`Invalid nesting at character ${position} in ${query}`);
+        }
         tokens[depth].push(expression);
       } else if (Criterion.match(rest)) {
         tokens[depth].push(new Key(rest));
@@ -56,6 +61,8 @@ export function lex(query: string): Expression {
       } else if (char === '/') {
         stringChars = [];
         mode = State.Regex;
+      } else if (char === ' ') {
+        throw new InvalidSearchError('Empty value after operator');
       } else {
         stringChars = [char];
         mode = State.UnquotedString;
@@ -91,21 +98,14 @@ export function lex(query: string): Expression {
     position += 1;
   }
 
-  // BAKERT probably handle this without a try catch, or wrap the whole thing if necessary
-  try {
-    // Handle nesting validation
-  } catch (e) {
-    if (e instanceof KeyError) {
-      throw new InvalidSearchError(`Invalid nesting in ${query}`);
-    }
-    throw e;
-  }
-
   if (mode === State.QuotedString) {
     throw new InvalidSearchError(`Reached end of expression without finding the end of a quoted string in ${query}`);
   }
   if (mode === State.Regex) {
     throw new InvalidSearchError(`Reached end of expression without finding the end of a regular expression in ${query}`);
+  }
+  if (mode === State.Term) {
+    throw new InvalidSearchError(`Reached end of expression without finding a value after operator in ${query}`);
   }
   if (depth !== 0) {
     throw new InvalidSearchError(`Reached end of expression without finding enough closing parentheses in ${query}`);

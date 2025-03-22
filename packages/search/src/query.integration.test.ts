@@ -1,10 +1,12 @@
-import { lex } from './parser';
+import { parseQuery } from './parser';
 import { QueryBuilder } from './queryBuilder';
-import { prisma } from 'database';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 describe('Query Integration Tests', () => {
   async function runQueryTest(query: string) {
-    const tokens = lex(query);
+    const tokens = parseQuery(query);
     const builder = new QueryBuilder();
     const searchQuery = builder.build(tokens);
 
