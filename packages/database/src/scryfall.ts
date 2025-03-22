@@ -51,9 +51,9 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
               colors: printing.colors,
               oracleId: printing.oracle_id,
               power: printing.power,
-              powerValue: printing.power ? parseFloat(printing.power) : null,
+              powerValue: statValue(printing.power),
               toughness: printing.toughness,
-              toughnessValue: printing.toughness ? parseFloat(printing.toughness) : null,
+              toughnessValue: statValue(printing.toughness),
             },
             update: {
               name: printing.name,
@@ -62,9 +62,9 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
               oracleText: printing.oracle_text,
               colors: printing.colors,
               power: printing.power,
-              powerValue: printing.power ? parseFloat(printing.power) : null,
+              powerValue: statValue(printing.power),
               toughness: printing.toughness,
-              toughnessValue: printing.toughness ? parseFloat(printing.toughness) : null,
+              toughnessValue: statValue(printing.toughness),
             }
           });
 
@@ -135,4 +135,12 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
   }, {
     timeout: 1000 * 60 * 60 // 60 minute timeout
   });
+}
+
+export function statValue(stat: string | undefined): number | null {
+  if (stat === undefined) return null;
+  if (stat === '∞') return Number.MAX_VALUE;
+  const cleaned = stat.replace(/^[^0-9.+-]+/, '');
+  const value = parseFloat(cleaned);
+  return isNaN(value) ? 0 : value;
 }
