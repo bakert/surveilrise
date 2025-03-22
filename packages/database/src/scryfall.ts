@@ -3,6 +3,11 @@ import type { ScryfallCard } from "types";
 import { Decimal } from "@prisma/client/runtime/library";
 import type { Prisma, PrismaClient, ScryfallMeta } from "@prisma/client";
 
+type TransactionalPrismaClient = Omit<
+  PrismaClient,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;
+
 export async function getLastUpdated(): Promise<string | null> {
   const meta = (await prisma.scryfallMeta.findFirst({
     where: { key: "last_updated" },
@@ -24,15 +29,15 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
   const seenOracleIds = new Set<string>();
 
   await prisma.$transaction(
-    async (tx) => {
+    async (tx: TransactionalPrismaClient) => {
       for (let i = 0; i < printings.length; i += BATCH_SIZE) {
         const batch = printings.slice(i, i + BATCH_SIZE);
 
         // Collect operations for this batch
-        const cardUpserts: any[] = [];
-        const legalityDeletes: any[] = [];
-        const legalityCreates: any[] = [];
-        const printingUpserts: any[] = [];
+        const cardUpserts: Array<Prisma.CardUpsertArgs> = [];
+        const legalityDeletes: Array<Prisma.LegalityDeleteManyArgs> = [];
+        const legalityCreates: Array<Prisma.LegalityCreateManyInput> = [];
+        const printingUpserts: Array<Prisma.PrintingUpsertArgs> = [];
 
         for (const printing of batch) {
           if (!printing.oracle_id) {
