@@ -1,4 +1,5 @@
 import { statValue } from './scryfall';
+import { Decimal } from '@prisma/client/runtime/library';
 
 // Here's a look at every unusual power and toughness value in mtg at time of writing (March 2025).
 // powerValue and toughnessValue here are the result of calling parseFloat on the provided string.
@@ -55,56 +56,56 @@ describe('statValue', () => {
   });
 
   it ('should handle simple integers', () => {
-    expect(statValue('0')).toBe(0);
-    expect(statValue('1')).toBe(1);
-    expect(statValue('2')).toBe(2);
-    expect(statValue('9')).toBe(9);
-    expect(statValue('10')).toBe(10);
-    expect(statValue('15')).toBe(15);
-    expect(statValue('20')).toBe(20);
-    expect(statValue('99')).toBe(99);
+    expect(statValue('0')).toStrictEqual(new Decimal(0));
+    expect(statValue('1')).toStrictEqual(new Decimal(1));
+    expect(statValue('2')).toStrictEqual(new Decimal(2));
+    expect(statValue('9')).toStrictEqual(new Decimal(9));
+    expect(statValue('10')).toStrictEqual(new Decimal(10));
+    expect(statValue('15')).toStrictEqual(new Decimal(15));
+    expect(statValue('20')).toStrictEqual(new Decimal(20));
+    expect(statValue('99')).toStrictEqual(new Decimal(99));
   });
 
   it('should handle plus/minus prefixes', () => {
-    expect(statValue('-0')).toBe(-0); // Jest thinks 0 and -0 are not the same.
-    expect(statValue('-1')).toBe(-1);
-    expect(statValue('+0')).toBe(0);
-    expect(statValue('+1')).toBe(1);
-    expect(statValue('+2')).toBe(2);
-    expect(statValue('+3')).toBe(3);
-    expect(statValue('+4')).toBe(4);
+    expect(statValue('-0')).toStrictEqual(new Decimal(-0));
+    expect(statValue('-1')).toStrictEqual(new Decimal(-1));
+    expect(statValue('+0')).toStrictEqual(new Decimal(0));
+    expect(statValue('+1')).toStrictEqual(new Decimal(1));
+    expect(statValue('+2')).toStrictEqual(new Decimal(2));
+    expect(statValue('+3')).toStrictEqual(new Decimal(3));
+    expect(statValue('+4')).toStrictEqual(new Decimal(4));
   });
 
   it('should handle decimal values', () => {
-    expect(statValue('.5')).toBe(0.5);
-    expect(statValue('1.5')).toBe(1.5);
-    expect(statValue('2.5')).toBe(2.5);
-    expect(statValue('3.5')).toBe(3.5);
+    expect(statValue('.5')).toStrictEqual(new Decimal(0.5));
+    expect(statValue('1.5')).toStrictEqual(new Decimal(1.5));
+    expect(statValue('2.5')).toStrictEqual(new Decimal(2.5));
+    expect(statValue('3.5')).toStrictEqual(new Decimal(3.5));
   });
 
   it('should "ignore" stars', () => {
-    expect(statValue('*')).toBe(0);
-    expect(statValue('*+1')).toBe(1);
-    expect(statValue('1+*')).toBe(1);
-    expect(statValue('2+*')).toBe(2);
-    expect(statValue('7-*')).toBe(7);
-    expect(statValue('*²')).toBe(0);
+    expect(statValue('*')).toStrictEqual(new Decimal(0));
+    expect(statValue('*+1')).toStrictEqual(new Decimal(1));
+    expect(statValue('1+*')).toStrictEqual(new Decimal(1));
+    expect(statValue('2+*')).toStrictEqual(new Decimal(2));
+    expect(statValue('7-*')).toStrictEqual(new Decimal(7));
+    expect(statValue('*²')).toStrictEqual(new Decimal(0));
   });
 
   it('should handle special characters', () => {
-    expect(statValue('?')).toBe(0);
+    expect(statValue('?')).toStrictEqual(new Decimal(0));
   });
 
-  it('should handle infinity symbol', () => {
-    expect(statValue('∞')).toBe(Number.MAX_VALUE);
+  it('should handle infinity symbol, at least kind of', () => {
+    expect(statValue('∞')!.greaterThan(1_000_000)).toBe(true);
   });
 
   it('should return the number part of unknown values, or zero when it has no idea', () => {
     // Unlike all the other tests these are not (currently) valid mtg power/toughness values.
     // If there's a number in there somewhere we will use it, otherwise default to 0 as with '*' and '?'.
-    expect(statValue('')).toBe(0); // Funnily enough there are no cards with empty string for power or toughness currently.
-    expect(statValue('abc')).toBe(0);
-    expect(statValue('5abc')).toBe(5);
-    expect(statValue('abc5')).toBe(5);
+    expect(statValue('')).toStrictEqual(new Decimal(0));
+    expect(statValue('abc')).toStrictEqual(new Decimal(0));
+    expect(statValue('5abc')).toStrictEqual(new Decimal(5));
+    expect(statValue('abc5')).toStrictEqual(new Decimal(5));
   });
 });

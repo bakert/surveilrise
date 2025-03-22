@@ -136,11 +136,12 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
     timeout: 1000 * 60 * 60 // 60 minute timeout
   });
 }
-
 export function statValue(stat: string | undefined): Decimal | null {
   if (stat === undefined) return null;
   if (stat === '∞') return new Decimal('1e34'); // Store a huge value that fits in numeric(65,30) so > and < work with sane inputs.
-  const cleaned = stat.replace(/^[^0-9.+-]+/, '');
+  if (stat === '*' || stat === '?' || stat.trim() === '') return new Decimal(0);
+  const match = stat.match(/[+-]?\d*\.?\d+/);
+  const cleaned = match ? match[0] : '0';
   try {
     return new Decimal(cleaned);
   } catch (e) {
