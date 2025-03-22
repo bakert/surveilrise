@@ -24,6 +24,10 @@ async function clearEntireDatabase() {
     WHERE schemaname = 'public'`;
 
   for (const {tablename} of result) {
+    if (tablename.startsWith('_')) {
+      console.log(`Skipping table ${tablename}`);
+      continue;
+    }
     await prisma.$executeRaw(
       Prisma.sql`TRUNCATE TABLE "${Prisma.raw(tablename)}" CASCADE`
     );
