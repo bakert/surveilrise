@@ -1,6 +1,6 @@
 import { prisma } from './client';
 import readline from 'readline';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 async function main() {
   const clearAll = process.argv.includes('--clear-all');
