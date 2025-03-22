@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Search Magic: The Gathering cards with advanced filters and syntax",
 };
 
-export default function Home() {
+export default function Home(): JSX.Element {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
       <main className="container mx-auto px-4 py-8">

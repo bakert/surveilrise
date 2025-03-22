@@ -5,11 +5,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { prisma } from "database";
+import type { Card as PrismaCard, Printing } from "@prisma/client";
 
 interface PageProps {
   params: {
     id: string;
   };
+}
+
+interface CardDetails {
+  id: string;
+  name: string;
+  imgUrl: string;
+  manaCost: string;
+  type: string;
+  oracleText: string;
+  colors: string[];
+  rarity: string;
+  set: string;
+  setName: string;
+  collectorNumber: string;
 }
 
 export async function generateMetadata({
@@ -30,9 +45,9 @@ export async function generateMetadata({
   };
 }
 
-async function getCardDetails(id: string) {
+async function getCardDetails(id: string): Promise<CardDetails | null> {
   try {
-    const card = await prisma.card.findUnique({
+    const card = (await prisma.card.findUnique({
       where: {
         oracleId: id,
       },
@@ -44,7 +59,7 @@ async function getCardDetails(id: string) {
           take: 1,
         },
       },
-    });
+    })) as (PrismaCard & { printings: Printing[] }) | null;
 
     if (!card) {
       return null;
@@ -71,7 +86,9 @@ async function getCardDetails(id: string) {
   }
 }
 
-export default async function CardPage({ params }: PageProps) {
+export default async function CardPage({
+  params,
+}: PageProps): Promise<JSX.Element> {
   const card = await getCardDetails(params.id);
 
   if (!card) {

@@ -18,7 +18,7 @@ interface SearchResponse {
   total: number;
 }
 
-export function CardGrid() {
+export function CardGrid(): JSX.Element | null {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
@@ -28,7 +28,7 @@ export function CardGrid() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchResults = async () => {
+    const fetchResults = async (): Promise<void> => {
       if (!query) return;
 
       setLoading(true);
@@ -41,7 +41,7 @@ export function CardGrid() {
         if (!response.ok) {
           throw new Error("Failed to fetch results");
         }
-        const data = await response.json();
+        const data = (await response.json()) as SearchResponse;
         setResults(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -50,7 +50,7 @@ export function CardGrid() {
       }
     };
 
-    fetchResults();
+    void fetchResults();
   }, [query, page]);
 
   if (!query) {
@@ -84,11 +84,11 @@ export function CardGrid() {
   const totalPages = Math.ceil(results.total / DEFAULT_PAGE_SIZE);
 
   // Generate pagination array with ellipsis
-  const getPaginationArray = () => {
+  const getPaginationArray = (): Array<number | "..."> => {
     const delta = 2; // Number of pages to show before and after current page
-    const range = [];
-    const rangeWithDots = [];
-    let l;
+    const range: number[] = [];
+    const rangeWithDots: Array<number | "..."> = [];
+    let l: number | undefined;
 
     for (let i = 1; i <= totalPages; i++) {
       if (

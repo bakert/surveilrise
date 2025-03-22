@@ -1,13 +1,31 @@
 import { parseSearchQuery } from "search";
 import { prisma } from "database";
 import { DEFAULT_PAGE_SIZE } from "../../constants";
+import type { Card, Printing, Prisma } from "@prisma/client";
+
+interface TransformedCard {
+  id: string;
+  name: string;
+  imgUrl: string | null;
+  debug: {
+    rawCard: Card & { printings: Printing[] };
+    printings: Printing[];
+  };
+}
 
 export interface SearchResult {
-  query: any;
-  cards: any[];
+  query: {
+    where: Prisma.CardWhereInput;
+    include?: {
+      printings: {
+        where: Prisma.PrintingWhereInput;
+      };
+    };
+  };
+  cards: TransformedCard[];
   total: number;
   debug: {
-    whereClause: any;
+    whereClause: Prisma.CardWhereInput;
     page: number;
     pageSize: number;
   };
@@ -19,6 +37,19 @@ export interface SearchParams {
   pageSize?: number;
 }
 
+interface ParsedSearchQuery {
+  where: Prisma.CardWhereInput;
+  include?: {
+    printings: {
+      where: Prisma.PrintingWhereInput;
+    };
+  };
+}
+
+type CardWithPrintings = Card & {
+  printings: Printing[];
+};
+
 export class SearchService {
   static async search({
     query,
@@ -29,7 +60,7 @@ export class SearchService {
       throw new Error("Missing query parameter");
     }
 
-    const searchQuery = parseSearchQuery(query);
+    const searchQuery = parseSearchQuery(query) as ParsedSearchQuery;
     const whereClause = searchQuery.where;
     const printingsWhere = searchQuery.include?.printings.where;
 
@@ -37,7 +68,7 @@ export class SearchService {
       where: whereClause,
     });
 
-    const cards = await prisma.card.findMany({
+    const prismaQuery = {
       where: whereClause,
       include: {
         printings: {
@@ -52,9 +83,13 @@ export class SearchService {
       orderBy: {
         name: "asc",
       },
-    });
+    } as const;
 
-    const transformedCards = cards.map((card) => ({
+    const cards = (await prisma.card.findMany(
+      prismaQuery
+    )) as unknown as CardWithPrintings[];
+
+    const transformedCards: TransformedCard[] = cards.map((card) => ({
       id: card.oracleId,
       name: card.name,
       imgUrl: card.printings[0]?.imageUrl || null,

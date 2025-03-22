@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SearchService } from "./search.service";
+import { SearchService, type SearchResult } from "./search.service";
 
 export async function GET(
   request: NextRequest
-): Promise<
-  NextResponse<{ query: any; cards: any[]; total: number } | { error: string }>
-> {
+): Promise<NextResponse<SearchResult | { error: string }>> {
   try {
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get("q");
