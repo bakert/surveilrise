@@ -16,6 +16,11 @@ type BulkDataMeta = {
 async function main() {
   console.log("Running Scryfall ingestion...");
 
+  const quickMode = process.argv.includes('--quick');
+  if (quickMode) {
+    console.log('Running in quick mode - will only import first 2000 cards');
+  }
+
   const defaultCardsMeta = await fetchBulkDataMeta();
   const lastUpdated = await scryfall.getLastUpdated();
 
@@ -25,8 +30,9 @@ async function main() {
   }
 
   const bulkData = await retrieveBulkData(defaultCardsMeta.download_uri);
+  const cardsToImport = quickMode ? bulkData.slice(0, 2000) : bulkData;
 
-  await scryfall.updateCards(bulkData);
+  await scryfall.updateCards(cardsToImport);
   await scryfall.setLastUpdated(defaultCardsMeta.updated_at);
 }
 
