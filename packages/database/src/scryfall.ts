@@ -24,14 +24,14 @@ export async function setLastUpdated(value: string): Promise<void> {
   });
 }
 
-export async function updateCards(printings: ScryfallCard[]): Promise<void> {
+export async function updateCards(entries: ScryfallCard[]): Promise<void> {
   const BATCH_SIZE = 1000;
   const seenOracleIds = new Set<string>();
 
   await prisma.$transaction(
     async (tx: TransactionalPrismaClient) => {
-      for (let i = 0; i < printings.length; i += BATCH_SIZE) {
-        const batch = printings.slice(i, i + BATCH_SIZE);
+      for (let i = 0; i < entries.length; i += BATCH_SIZE) {
+        const batch = entries.slice(i, i + BATCH_SIZE);
 
         // Collect operations for this batch
         const cardUpserts: Array<Prisma.CardUpsertArgs> = [];
@@ -39,52 +39,52 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
         const legalityCreates: Array<Prisma.LegalityCreateManyInput> = [];
         const printingUpserts: Array<Prisma.PrintingUpsertArgs> = [];
 
-        for (const printing of batch) {
-          if (!printing.oracle_id) {
-            console.log("Skipping card without oracle_id:", printing.name);
+        for (const entry of batch) {
+          if (!entry.oracle_id) {
+            console.log("Skipping card without oracle_id:", entry.name);
             continue;
           }
 
-          if (!seenOracleIds.has(printing.oracle_id)) {
-            seenOracleIds.add(printing.oracle_id);
+          if (!seenOracleIds.has(entry.oracle_id)) {
+            seenOracleIds.add(entry.oracle_id);
 
             // Queue card upsert
             cardUpserts.push({
-              where: { oracleId: printing.oracle_id },
+              where: { oracleId: entry.oracle_id },
               create: {
-                name: printing.name,
-                manaCost: printing.mana_cost,
-                typeLine: printing.type_line,
-                oracleText: printing.oracle_text,
-                colors: printing.colors,
-                oracleId: printing.oracle_id,
-                power: printing.power,
-                powerValue: statValue(printing.power),
-                toughness: printing.toughness,
-                toughnessValue: statValue(printing.toughness),
+                name: entry.name,
+                manaCost: entry.mana_cost,
+                typeLine: entry.type_line,
+                oracleText: entry.oracle_text,
+                colors: entry.colors,
+                oracleId: entry.oracle_id,
+                power: entry.power,
+                powerValue: statValue(entry.power),
+                toughness: entry.toughness,
+                toughnessValue: statValue(entry.toughness),
               },
               update: {
-                name: printing.name,
-                manaCost: printing.mana_cost,
-                typeLine: printing.type_line,
-                oracleText: printing.oracle_text,
-                colors: printing.colors,
-                power: printing.power,
-                powerValue: statValue(printing.power),
-                toughness: printing.toughness,
-                toughnessValue: statValue(printing.toughness),
+                name: entry.name,
+                manaCost: entry.mana_cost,
+                typeLine: entry.type_line,
+                oracleText: entry.oracle_text,
+                colors: entry.colors,
+                power: entry.power,
+                powerValue: statValue(entry.power),
+                toughness: entry.toughness,
+                toughnessValue: statValue(entry.toughness),
               },
             });
 
             // Queue legality operations
             legalityDeletes.push({
-              where: { oracleId: printing.oracle_id },
+              where: { oracleId: entry.oracle_id },
             });
 
-            const legalityEntries = Object.entries(printing.legalities);
+            const legalityEntries = Object.entries(entry.legalities);
             for (const [format, status] of legalityEntries) {
               legalityCreates.push({
-                oracleId: printing.oracle_id,
+                oracleId: entry.oracle_id,
                 format,
                 legal: status === "legal",
               });
@@ -95,49 +95,49 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
           printingUpserts.push({
             where: {
               oracleId_setCode_collectorNumber: {
-                oracleId: printing.oracle_id,
-                setCode: printing.set,
-                collectorNumber: printing.collector_number,
+                oracleId: entry.oracle_id,
+                setCode: entry.set,
+                collectorNumber: entry.collector_number,
               },
             },
             create: {
-              oracleId: printing.oracle_id,
-              setCode: printing.set,
-              releasedAt: new Date(printing.released_at),
-              collectorNumber: printing.collector_number,
-              rarity: printing.rarity,
-              imageUrl: printing.image_uris?.normal ?? null,
-              usd: printing.prices.usd ? parseFloat(printing.prices.usd) : null,
-              usdFoil: printing.prices.usd_foil
-                ? parseFloat(printing.prices.usd_foil)
+              oracleId: entry.oracle_id,
+              setCode: entry.set,
+              releasedAt: new Date(entry.released_at),
+              collectorNumber: entry.collector_number,
+              rarity: entry.rarity,
+              imageUrl: entry.image_uris?.border_crop ?? null,
+              usd: entry.prices.usd ? parseFloat(entry.prices.usd) : null,
+              usdFoil: entry.prices.usd_foil
+                ? parseFloat(entry.prices.usd_foil)
                 : null,
-              usdEtched: printing.prices.usd_etched
-                ? parseFloat(printing.prices.usd_etched)
+              usdEtched: entry.prices.usd_etched
+                ? parseFloat(entry.prices.usd_etched)
                 : null,
-              eur: printing.prices.eur ? parseFloat(printing.prices.eur) : null,
-              eurFoil: printing.prices.eur_foil
-                ? parseFloat(printing.prices.eur_foil)
+              eur: entry.prices.eur ? parseFloat(entry.prices.eur) : null,
+              eurFoil: entry.prices.eur_foil
+                ? parseFloat(entry.prices.eur_foil)
                 : null,
-              tix: printing.prices.tix ? parseFloat(printing.prices.tix) : null,
-              artist: printing.artist ?? "",
+              tix: entry.prices.tix ? parseFloat(entry.prices.tix) : null,
+              artist: entry.artist ?? "",
             },
             update: {
-              releasedAt: new Date(printing.released_at),
-              rarity: printing.rarity,
-              imageUrl: printing.image_uris?.normal ?? null,
-              usd: printing.prices.usd ? parseFloat(printing.prices.usd) : null,
-              usdFoil: printing.prices.usd_foil
-                ? parseFloat(printing.prices.usd_foil)
+              releasedAt: new Date(entry.released_at),
+              rarity: entry.rarity,
+              imageUrl: entry.image_uris?.border_crop ?? null,
+              usd: entry.prices.usd ? parseFloat(entry.prices.usd) : null,
+              usdFoil: entry.prices.usd_foil
+                ? parseFloat(entry.prices.usd_foil)
                 : null,
-              usdEtched: printing.prices.usd_etched
-                ? parseFloat(printing.prices.usd_etched)
+              usdEtched: entry.prices.usd_etched
+                ? parseFloat(entry.prices.usd_etched)
                 : null,
-              eur: printing.prices.eur ? parseFloat(printing.prices.eur) : null,
-              eurFoil: printing.prices.eur_foil
-                ? parseFloat(printing.prices.eur_foil)
+              eur: entry.prices.eur ? parseFloat(entry.prices.eur) : null,
+              eurFoil: entry.prices.eur_foil
+                ? parseFloat(entry.prices.eur_foil)
                 : null,
-              tix: printing.prices.tix ? parseFloat(printing.prices.tix) : null,
-              artist: printing.artist ?? "",
+              tix: entry.prices.tix ? parseFloat(entry.prices.tix) : null,
+              artist: entry.artist ?? "",
             },
           });
         }
@@ -151,8 +151,8 @@ export async function updateCards(printings: ScryfallCard[]): Promise<void> {
         ]);
 
         console.log(
-          `Processed ${Math.min(i + BATCH_SIZE, printings.length)} of ${
-            printings.length
+          `Processed ${Math.min(i + BATCH_SIZE, entries.length)} of ${
+            entries.length
           } cards`
         );
       }
