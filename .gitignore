@@ -39,6 +39,3 @@ dist/
 
 #local db
 data/
-
-# scryfall download
-scryfall.json
