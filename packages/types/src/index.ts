@@ -26,6 +26,8 @@ export type ScryfallCard = {
   cmc: number;
   type_line: string;
   oracle_text: string;
+  power?: string;
+  toughness?: string;
   colors: string[];
   color_identity: string[];
   keywords: string[];
@@ -78,4 +80,4 @@ export type ScryfallCard = {
   purchase_uris: {
     [key: string]: string;
   };
-}; 
+};
