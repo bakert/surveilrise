@@ -16,14 +16,18 @@ model User {
 }
 
 model Card {
-  oracleId   String     @id @unique
-  name       String
-  manaCost   String?
-  typeLine   String
-  oracleText String?
-  colors     String[]
-  legalities Legality[]
-  printings  Printing[]
+  oracleId       String     @id @unique
+  name           String
+  manaCost       String?
+  typeLine       String
+  oracleText     String?
+  colors         String[]
+  power          String?
+  powerValue     Decimal?
+  toughness      String?
+  toughnessValue Decimal?
+  legalities     Legality[]
+  printings      Printing[]
 }
 
 model Printing {
@@ -39,6 +43,8 @@ model Printing {
   eur             Decimal?
   eurFoil         Decimal?
   tix             Decimal?
+  artist          String?
+
   card            Card     @relation(fields: [oracleId], references: [oracleId], onDelete: Cascade)
 
   @@unique([oracleId, setCode, collectorNumber])
