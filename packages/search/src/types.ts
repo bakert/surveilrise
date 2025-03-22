@@ -1,6 +1,5 @@
 export type TokenType = 'FIELD' | 'VALUE' | 'OPERATOR' | 'GROUP_START' | 'GROUP_END';
 
-// BAKERT they all start with EXPECT_ so maybe lose that?
 export const enum State {
   Expression = 'Expression',
   Operator = 'Operator',
