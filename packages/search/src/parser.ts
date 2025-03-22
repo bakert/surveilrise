@@ -1,7 +1,6 @@
 import { Token, Expression, State, Key, BooleanOperator, Criterion, Operator, StringToken, Regex, InvalidTokenError, InvalidSearchError, InvalidModeException, KeyError } from './types';
 
-// BAKERT lex or parser but certainly not both
-export function lex(query: string): Expression {
+export function parseQuery(query: string): Expression {
   query = query.toLowerCase() + ' ';
   const tokens: { [depth: number]: Array<Expression | Token> } = { 0: [] };
   let depth = 0;
