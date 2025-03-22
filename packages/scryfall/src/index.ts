@@ -36,7 +36,6 @@ async function main() {
   await scryfall.setLastUpdated(defaultCardsMeta.updated_at);
 }
 
-// BAKERT "fetch" npt "get"
 async function fetchBulkDataMeta() {
   const bulkDataRes = await fetch(SCRYFALL_BULK_URL);
   if (!bulkDataRes.ok) throw new Error(`Failed to fetch bulk data info: ${bulkDataRes.statusText}`);
