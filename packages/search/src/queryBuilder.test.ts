@@ -14,6 +14,14 @@ describe('QueryBuilder', () => {
     const query = builder.build(tokens);
 
     expect(query).toEqual({
+      include: {
+        printings: {
+          where: {},
+          orderBy: {
+            releasedAt: 'desc'
+          }
+        }
+      },
       where: {
         AND: [{
           colors: {
@@ -39,6 +47,14 @@ describe('QueryBuilder', () => {
     const query = builder.build(tokens);
 
     expect(query).toEqual({
+      include: {
+        printings: {
+          where: {},
+          orderBy: {
+            releasedAt: 'desc'
+          }
+        }
+      },
       where: {
         AND: [
           {
@@ -53,6 +69,44 @@ describe('QueryBuilder', () => {
             }
           }
         ]
+      }
+    });
+  });
+
+  it('should build an artist search', () => {
+    const tokens = new Expression([
+      new Key('a'),
+      new Operator(':'),
+      new StringToken('john avon')
+    ]);
+
+    const query = builder.build(tokens);
+
+    expect(query).toEqual({
+      include: {
+        printings: {
+          where: {
+            artist: {
+              contains: 'john avon',
+              mode: 'insensitive'
+            }
+          },
+          orderBy: {
+            releasedAt: 'desc'
+          }
+        }
+      },
+      where: {
+        AND: [{
+          printings: {
+            some: {
+              artist: {
+                contains: 'john avon',
+                mode: 'insensitive'
+              }
+            }
+          }
+        }]
       }
     });
   });

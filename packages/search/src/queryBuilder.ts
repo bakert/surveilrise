@@ -1,9 +1,19 @@
-import { Token, SearchQuery, Expression, Key, StringToken, BooleanOperator, Operator } from './types';
+import { SearchQuery, Expression, Key, StringToken, BooleanOperator, Operator, WhereClause } from './types';
 
 export class QueryBuilder {
+  private printingsWhere: WhereClause = {};
+
   build(expression: Expression): SearchQuery {
     const query: SearchQuery = {
-      where: {}
+      where: {},
+      include: {
+        printings: {
+          where: this.printingsWhere,
+          orderBy: {
+            releasedAt: 'desc'
+          }
+        }
+      }
     };
 
     // Process tokens in order
@@ -67,6 +77,14 @@ export class QueryBuilder {
       i++;
     }
 
+    // Update printings filter if one was set during query building
+    if (this.printingsWhere) {
+      if (!query.include) query.include = {};
+      if (!query.include.printings) query.include.printings = {};
+      query.include.printings.where = this.printingsWhere;
+    }
+
+    console.log('Generated query:', JSON.stringify(query, null, 2));
     return query;
   }
 
@@ -127,6 +145,23 @@ export class QueryBuilder {
         return {
           manaValue: this.buildNumericComparison(operator, value)
         };
+
+      case 'a':
+      case 'artist': {
+        // For artist searches, add a where clause to printings to filter them
+        const artistFilter = {
+          artist: {
+            contains: value,
+            mode: 'insensitive'
+          }
+        };
+        this.printingsWhere = artistFilter;
+        return {
+          printings: {
+            some: artistFilter
+          }
+        };
+      }
 
       default:
         throw new Error(`Unknown field: ${field}`);

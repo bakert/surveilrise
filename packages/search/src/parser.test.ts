@@ -35,6 +35,33 @@ describe('SearchParser', () => {
     expect(tokens.tokens[2]).toBeInstanceOf(Expression);
   });
 
+  it('should parse a quoted string', () => {
+    const tokens = lex('"quoted string"');
+
+    expect(tokens.tokens).toHaveLength(1);
+    expect(tokens.tokens[0]).toBeInstanceOf(StringToken);
+    const token = tokens.tokens[0] as StringToken;
+    expect(token.value()).toBe('quoted string');
+  });
+
+  it('should parse an artist search', () => {
+    const tokens = lex('artist:"john avon"');
+
+    expect(tokens.tokens).toHaveLength(3);
+    expect(tokens.tokens[0]).toBeInstanceOf(Key);
+    expect(tokens.tokens[1]).toBeInstanceOf(Operator);
+    expect(tokens.tokens[2]).toBeInstanceOf(StringToken);
+
+    const artistToken = tokens.tokens[0] as Key;
+    const operatorToken = tokens.tokens[1] as Operator;
+    const valueToken = tokens.tokens[2] as StringToken;
+
+    expect(artistToken.value()).toBe('artist');
+    expect(operatorToken.value()).toBe(':');
+    expect(valueToken.value()).toBe('john avon');
+  });
+
+
   // BAKERT test invalid/malformed queries
   // BAKERT test weird spacing
   // BAKERT test regex

@@ -16,7 +16,13 @@ describe('Query Integration Tests', () => {
         colors: true,
         typeLine: true,
         power: true,
-        toughness: true
+        toughness: true,
+        oracleText: true,
+        printings: {
+          select: {
+            artist: true
+          }
+        }
       },
       take: 20
     });
@@ -52,6 +58,24 @@ describe('Query Integration Tests', () => {
     const results = await runQueryTest('t:instant');
     expect(results.length).toBeGreaterThan(0);
     expect(results.every(card => card.typeLine.toLowerCase().includes('instant'))).toBe(true);
+  });
+
+  it('should find cards via rules text', async () => {
+    const results = await runQueryTest('o:"rEtUrN up to THREE target LAND cards"');
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.some(card => card.oracleText?.toLowerCase().includes('return up to three target land cards'))).toBe(true);
+  });
+
+  it('should find cards by artist', async () => {
+    const results = await runQueryTest('artist:"John Avon"');
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every(card => card.printings.some(printing => printing.artist?.toLowerCase().includes('john avon')))).toBe(true);
+  });
+
+  it('should find cards by artist when combined with other fields', async () => {
+    const results = await runQueryTest('artist:"John Avon" t:island');
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every(card => card.printings.some(printing => printing.artist?.toLowerCase().includes('john avon') && card.typeLine.toLowerCase().includes('island')))).toBe(true);
   });
 
   it('should find instants with "Burst Lightning" in name', async () => {
