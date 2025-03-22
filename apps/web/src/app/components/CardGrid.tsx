@@ -131,7 +131,6 @@ export function CardGrid(): JSX.Element | null {
             key={card.id}
             className="relative aspect-[2.5/3.5] cursor-pointer hover:opacity-90 transition-opacity"
             onClick={() => {
-              console.log("Clicking card:", card);
               router.push(`/card/${card.id}`);
             }}
           >
