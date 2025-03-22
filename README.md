@@ -1,7 +1,5 @@
 # Surveilrise
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bakert/surveilrise/ci.yml)
-
 A Scryfall clone.
 
 # Requirements
