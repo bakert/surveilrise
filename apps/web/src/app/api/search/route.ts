@@ -10,7 +10,6 @@ export async function GET(
     // BAKERT think about stable ordering in the pagination - are we relying on db order?
     // BAKERT need to indicate total size of results
     const page = parseInt(searchParams.get('page') || '1');
-    const pageSize = 20; // Cards per page
 
     if (!query) {
       return NextResponse.json(
