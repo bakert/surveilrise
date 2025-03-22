@@ -54,6 +54,7 @@ export async function updateCards(entries: ScryfallCard[]): Promise<void> {
               create: {
                 name: entry.name,
                 manaCost: entry.mana_cost,
+                manaValue: manaValue(entry.cmc),
                 typeLine: entry.type_line,
                 oracleText: entry.oracle_text,
                 colors: entry.colors,
@@ -66,6 +67,7 @@ export async function updateCards(entries: ScryfallCard[]): Promise<void> {
               update: {
                 name: entry.name,
                 manaCost: entry.mana_cost,
+                manaValue: manaValue(entry.cmc),
                 typeLine: entry.type_line,
                 oracleText: entry.oracle_text,
                 colors: entry.colors,
@@ -174,4 +176,9 @@ export function statValue(stat: string | undefined): Decimal | null {
   } catch (e) {
     return new Decimal(0);
   }
+}
+
+export function manaValue(cmc: number | undefined): Decimal | null {
+  if (cmc === undefined) return null;
+  return new Decimal(cmc.toString());
 }

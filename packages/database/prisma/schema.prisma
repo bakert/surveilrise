@@ -19,6 +19,7 @@ model Card {
   oracleId       String     @id @unique
   name           String
   manaCost       String?
+  manaValue      Decimal?
   typeLine       String
   oracleText     String?
   colors         String[]

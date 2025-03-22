@@ -1,4 +1,4 @@
-import { statValue } from "./scryfall";
+import { statValue, manaValue } from "./scryfall";
 import { Decimal } from "@prisma/client/runtime/library";
 import { describe, expect, it } from "@jest/globals";
 
@@ -108,5 +108,14 @@ describe("statValue", () => {
     expect(statValue("abc")).toStrictEqual(new Decimal(0));
     expect(statValue("5abc")).toStrictEqual(new Decimal(5));
     expect(statValue("abc5")).toStrictEqual(new Decimal(5));
+  });
+});
+
+describe("manaValue", () => {
+  it("should handle various inputs", () => {
+    expect(manaValue(0.5)).toStrictEqual(new Decimal(0.5));
+    expect(manaValue(undefined)).toBeNull();
+    expect(manaValue(1)).toStrictEqual(new Decimal(1));
+    expect(manaValue(10)).toStrictEqual(new Decimal(10));
   });
 });
