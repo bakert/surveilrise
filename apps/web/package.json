@@ -9,12 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-separator": "^1.1.2",
+    "@radix-ui/react-slot": "^1.1.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "database": "1.0.0",
     "env": "1.0.0",
+    "lucide-react": "^0.483.0",
     "next": "^13.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "search": "1.0.0",
+    "tailwind-merge": "^3.0.2",
     "ui": "1.0.0"
   },
   "devDependencies": {

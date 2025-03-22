@@ -5,6 +5,11 @@ export interface SearchResult {
   query: any;
   cards: any[];
   total: number;
+  debug: {
+    whereClause: any;
+    page: number;
+    pageSize: number;
+  };
 }
 
 export interface SearchParams {
@@ -46,10 +51,30 @@ export class SearchService {
       }
     });
 
+    console.log('Found cards:', cards);
+
+    // Transform cards to include imgUrl from first printing
+    const transformedCards = cards.map(card => ({
+      id: card.oracleId,
+      name: card.name,
+      imgUrl: card.printings[0]?.imageUrl || null,
+      debug: {
+        rawCard: card,
+        printings: card.printings
+      }
+    }));
+
+    console.log('Transformed cards:', transformedCards);
+
     return {
       query: searchQuery,
-      cards,
-      total
+      cards: transformedCards,
+      total,
+      debug: {
+        whereClause,
+        page,
+        pageSize
+      }
     };
   }
 }
