@@ -21,7 +21,7 @@ A Scryfall clone.
 - `cp packages/env/.env.example packages/env/.env && ./dev-bootstrap.sh` to set up the environment variables
 - `docker-compose up -d` to run the Postgres database
 - `pnpm --filter database db:migrate:reset` to initialize the db schema. You only need to do this once.
-- `pnpm --filter scryfall exec ts-node src/index.ts` to download Scryfall data and populate the database. You can run this again any time to update to latest Scryfall data.
+- `pnpm --filter scryfall exec ts-node src/import.ts` to download Scryfall data and populate the database. You can run this again any time to update to latest Scryfall data.
 - `turbo run dev` to start the webserver.
 - Open http://localhost:3000 in your browser.
 
