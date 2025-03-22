@@ -48,3 +48,4 @@
 - We have vestigal regex support but we don't use it in queryBuilder
 - statValue is exported solely to test - maybe we can have a higher level test that exercises it instead and make it private again
 - Add the tests to CI and require them to pass before allowing merge
+- Scryfall data ingestion was pretty darn slow on my server despite being fairly snappy on laptop, maybe make more effort to speed it up.
