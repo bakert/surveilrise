@@ -8,6 +8,57 @@ import {
   WhereClause,
 } from "./types";
 
+type NumericComparison = {
+  equals?: number;
+  gt?: number;
+  gte?: number;
+  lt?: number;
+  lte?: number;
+};
+
+type FieldQuery = {
+  name?: {
+    contains: string;
+    mode: "insensitive";
+  };
+  legalities?: {
+    some: {
+      format: {
+        equals: string;
+        mode: "insensitive";
+      };
+      status: {
+        equals: string;
+      };
+    };
+  };
+  oracleText?: {
+    contains: string;
+    mode: "insensitive";
+  };
+  typeLine?: {
+    contains: string;
+    mode: "insensitive";
+  };
+  powerValue?: NumericComparison;
+  toughnessValue?: NumericComparison;
+  manaValue?: NumericComparison;
+  printings?: {
+    some: {
+      artist: {
+        contains: string;
+        mode: "insensitive";
+      };
+    };
+  };
+  colors?: {
+    equals?: string[];
+    hasEvery?: string[];
+    hasSome?: string[];
+    none?: string[];
+  };
+};
+
 export class QueryBuilder {
   private printingsWhere: WhereClause = {};
 
@@ -99,7 +150,11 @@ export class QueryBuilder {
     return query;
   }
 
-  private buildCriterion(field: string, operator: string, value: string): any {
+  private buildCriterion(
+    field: string,
+    operator: string,
+    value: string
+  ): FieldQuery {
     switch (field) {
       case "c":
       case "color":
@@ -163,7 +218,7 @@ export class QueryBuilder {
         const artistFilter = {
           artist: {
             contains: value,
-            mode: "insensitive",
+            mode: "insensitive" as const,
           },
         };
         this.printingsWhere = artistFilter;
@@ -179,7 +234,7 @@ export class QueryBuilder {
     }
   }
 
-  private buildColorQuery(operator: string, colors: string): any {
+  private buildColorQuery(operator: string, colors: string): FieldQuery {
     const colorSet = new Set(colors.toUpperCase().split(""));
 
     switch (operator) {
@@ -213,7 +268,10 @@ export class QueryBuilder {
     }
   }
 
-  private buildNumericComparison(operator: string, value: string): any {
+  private buildNumericComparison(
+    operator: string,
+    value: string
+  ): NumericComparison {
     const num = parseInt(value);
     switch (operator) {
       case ":":

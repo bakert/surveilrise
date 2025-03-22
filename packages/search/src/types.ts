@@ -73,7 +73,7 @@ export abstract class Token {
     return "";
   }
 
-  constructor(chars: string) {
+  constructor() {
     // Each derived class will set val in its own constructor
   }
 
@@ -95,7 +95,7 @@ export class BooleanOperator extends Token {
   protected static values = ["AND", "OR", "NOT", "-"];
 
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = BooleanOperator.find(chars);
   }
 
@@ -124,7 +124,7 @@ export class BooleanOperator extends Token {
 
 export class Criterion extends Token {
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = Criterion.find(chars);
   }
 
@@ -192,7 +192,7 @@ export class Key extends Token {
   ];
 
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = Key.find(chars);
   }
 }
@@ -202,14 +202,14 @@ export class Operator extends Token {
   protected static values = ["<=", ">=", ":", "!", "<", ">", "="];
 
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = Operator.find(chars);
   }
 }
 
 export class StringToken extends Token {
   constructor(chars: string) {
-    super(chars);
+    super();
     this.val = StringToken.find(chars);
   }
 
@@ -251,7 +251,7 @@ export interface SearchQuery {
 }
 
 export interface WhereClause {
-  AND?: Array<WhereClause | Record<string, any>>;
-  OR?: Array<WhereClause | Record<string, any>>;
-  [key: string]: any;
+  AND?: Array<WhereClause | Record<string, unknown>>;
+  OR?: Array<WhereClause | Record<string, unknown>>;
+  [key: string]: unknown;
 }

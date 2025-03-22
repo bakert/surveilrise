@@ -11,7 +11,6 @@ import {
   InvalidTokenError,
   InvalidSearchError,
   InvalidModeException,
-  KeyError,
 } from "./types";
 
 export function parseQuery(query: string): Expression {

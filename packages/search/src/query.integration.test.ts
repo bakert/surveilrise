@@ -5,7 +5,18 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 describe("Query Integration Tests", () => {
-  async function runQueryTest(query: string) {
+  async function runQueryTest(query: string): Promise<
+    Array<{
+      oracleId: string;
+      name: string;
+      colors: string[];
+      typeLine: string;
+      power: string | null;
+      toughness: string | null;
+      oracleText: string | null;
+      printings: Array<{ artist: string | null }>;
+    }>
+  > {
     const tokens = parseQuery(query);
     const builder = new QueryBuilder();
     const searchQuery = builder.build(tokens);

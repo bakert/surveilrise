@@ -4,9 +4,7 @@ import {
   Key,
   Operator,
   StringToken,
-  Regex,
   InvalidSearchError,
-  InvalidTokenError,
 } from "./types";
 import { parseQuery } from "./parser";
 
