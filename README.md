@@ -9,6 +9,10 @@ A Scryfall clone.
 - [Docker](https://www.docker.com/)
 - [Turbo](https://turbo.build/repo/docs/installing)
 
+# Live Version
+
+- [bluebones.net](http://bluebones.net:3002/) - please note: no SSL cert yet, remove the 's' in https if your browser inserts it
+
 # Getting Started
 
 - `git clone https://github.com/bakert/surveilrise.git`
