@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { DEFAULT_PAGE_SIZE } from '../constants';
 
 interface Card {
   id: string;
@@ -78,7 +79,7 @@ export function CardGrid() {
     );
   }
 
-  const totalPages = Math.ceil(results.total / 20);
+  const totalPages = Math.ceil(results.total / DEFAULT_PAGE_SIZE);
 
   // Generate pagination array with ellipsis
   const getPaginationArray = () => {
