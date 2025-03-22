@@ -17,9 +17,15 @@ export function parseQuery(query: string): Expression {
         depth += 1;
         tokens[depth] = [];
       } else if (char === ')') {
+        if (depth === 0) {
+          throw new InvalidSearchError(`Unexpected closing parenthesis at character ${position} in ${query}`);
+        }
         const expression = new Expression(tokens[depth]);
         delete tokens[depth];
         depth -= 1;
+        if (!tokens[depth]) {
+          throw new InvalidSearchError(`Invalid nesting at character ${position} in ${query}`);
+        }
         tokens[depth].push(expression);
       } else if (Criterion.match(rest)) {
         tokens[depth].push(new Key(rest));

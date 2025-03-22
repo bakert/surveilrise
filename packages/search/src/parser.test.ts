@@ -1,4 +1,4 @@
-import { BooleanOperator, Expression, Key, Operator, StringToken, Regex} from './types';
+import { BooleanOperator, Expression, Key, Operator, StringToken, Regex, InvalidSearchError, InvalidTokenError} from './types';
 import { parseQuery } from './parser';
 
 describe('SearchParser', () => {
@@ -63,10 +63,13 @@ describe('SearchParser', () => {
 
 
   it('should handle invalid/malformed queries by throwing', () => {
-    expect(() => parseQuery('(')).toThrow();
-    expect(() => parseQuery(')')).toThrow();
-    expect(() => parseQuery('"unclosed quote')).toThrow();
-    expect(() => parseQuery('c:')).toThrow();
+    expect(() => parseQuery('(')).toThrow(InvalidSearchError);
+    expect(() => parseQuery(')')).toThrow(InvalidSearchError);
+    expect(() => parseQuery('"unclosed quote')).toThrow(InvalidSearchError);
+    expect(() => parseQuery('c:')).toThrow(InvalidSearchError);
+    expect(() => parseQuery('((c:r)')).toThrow(InvalidSearchError);
+    expect(() => parseQuery('(c:r))')).toThrow(InvalidSearchError);
+    expect(() => parseQuery('(c:r (t:creature)')).toThrow(InvalidSearchError);
   });
 
   it('should handle weird spacing', () => {
