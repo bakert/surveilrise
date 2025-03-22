@@ -55,6 +55,8 @@ export function parseQuery(query: string): Expression {
       } else if (char === '/') {
         stringChars = [];
         mode = State.Regex;
+      } else if (char === ' ') {
+        throw new InvalidSearchError('Empty value after operator');
       } else {
         stringChars = [char];
         mode = State.UnquotedString;
@@ -105,6 +107,9 @@ export function parseQuery(query: string): Expression {
   }
   if (mode === State.Regex) {
     throw new InvalidSearchError(`Reached end of expression without finding the end of a regular expression in ${query}`);
+  }
+  if (mode === State.Term) {
+    throw new InvalidSearchError(`Reached end of expression without finding a value after operator in ${query}`);
   }
   if (depth !== 0) {
     throw new InvalidSearchError(`Reached end of expression without finding enough closing parentheses in ${query}`);
