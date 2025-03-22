@@ -25,14 +25,14 @@ export function SearchBar(): JSX.Element {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search cards... (e.g., 'type:creature cmc:3')"
-        className="w-full pr-10"
+        className="w-full pr-16 text-2xl py-8 rounded-xl"
       />
       <Button
         type="submit"
         size="icon"
-        className="absolute right-2 top-1/2 -translate-y-1/2"
+        className="absolute right-3 top-1/2 -translate-y-1/2 h-14 w-14"
       >
-        <Search className="h-4 w-4" />
+        <Search className="h-8 w-8" />
       </Button>
     </form>
   );
