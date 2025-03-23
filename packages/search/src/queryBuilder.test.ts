@@ -2,7 +2,11 @@ import { QueryBuilder } from "./queryBuilder";
 import { Expression, Key, StringToken, Operator } from "./types";
 
 describe("QueryBuilder", () => {
-  const builder = new QueryBuilder();
+  let builder: QueryBuilder;
+
+  beforeEach(() => {
+    builder = new QueryBuilder();
+  });
 
   it("should build a simple field-value query", () => {
     const tokens = new Expression([
@@ -60,15 +64,19 @@ describe("QueryBuilder", () => {
       where: {
         AND: [
           {
-            colors: {
-              hasEvery: ["R"],
-            },
-          },
-          {
-            typeLine: {
-              contains: "pirate",
-              mode: "insensitive",
-            },
+            AND: [
+              {
+                colors: {
+                  hasEvery: ["R"],
+                },
+              },
+              {
+                typeLine: {
+                  contains: "pirate",
+                  mode: "insensitive",
+                },
+              },
+            ],
           },
         ],
       },
@@ -109,6 +117,75 @@ describe("QueryBuilder", () => {
                 },
               },
             },
+          },
+        ],
+      },
+    });
+  });
+
+  it("should build a complex OR query", () => {
+    const tokens = new Expression([
+      new Expression([
+        new Key("c"),
+        new Operator(":"),
+        new StringToken("r"),
+        new Key("t"),
+        new Operator(":"),
+        new StringToken("instant"),
+      ]),
+      new Operator("OR"),
+      new Expression([
+        new Key("c"),
+        new Operator(":"),
+        new StringToken("u"),
+        new Key("t"),
+        new Operator(":"),
+        new StringToken("sorcery"),
+      ]),
+    ]);
+
+    const query = builder.build(tokens);
+
+    expect(query).toEqual({
+      include: {
+        printings: {
+          where: {},
+          orderBy: {
+            releasedAt: "desc",
+          },
+        },
+      },
+      where: {
+        AND: [
+          {
+            AND: [
+              {
+                colors: {
+                  hasEvery: ["R"],
+                },
+              },
+              {
+                typeLine: {
+                  contains: "instant",
+                  mode: "insensitive",
+                },
+              },
+            ],
+          },
+          {
+            AND: [
+              {
+                colors: {
+                  hasEvery: ["U"],
+                },
+              },
+              {
+                typeLine: {
+                  contains: "sorcery",
+                  mode: "insensitive",
+                },
+              },
+            ],
           },
         ],
       },

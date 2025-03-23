@@ -83,10 +83,7 @@ export class QueryBuilder {
         // Recursively process nested expressions
         const subQuery = this.build(token);
         if (!query.where.AND) query.where.AND = [];
-        // Flatten the criteria from the subquery
-        if (subQuery.where.AND) {
-          query.where.AND.push(...subQuery.where.AND);
-        }
+        query.where.AND.push(subQuery.where);
       } else if (token instanceof Key) {
         // Process key-operator-value triplet
         try {
@@ -114,11 +111,9 @@ export class QueryBuilder {
           throw new Error("Cannot end expression with boolean operator");
         }
         // Handle OR operator by creating new OR array
-        if (token.value() === "or") {
-          if (!query.where.OR) query.where.OR = [];
+        if (token.value() === "OR") {
           const right = this.build(new Expression(tokens.slice(i + 1)));
-          query.where.OR.push(query.where);
-          query.where.OR.push(right.where);
+          query.where = { OR: [{ AND: query.where.AND || [] }, right.where] };
           break;
         }
         // Handle NOT operator by negating the next criterion
