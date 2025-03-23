@@ -40,7 +40,7 @@ The OpenAPI specification is available at `/api/openapi`.
 - `pnpm --filter scryfall exec ts-node src/import.ts` to download Scryfall data and populate the database. You can run this again any time to update to latest Scryfall data.
 - `pnpm dev` to start the webserver (and live reload any changes).
 - Open http://localhost:3000 in your browser.
-- Try "f:pioneer c:u cmc=1 t:instant o:draw" as a search, maybe.
+- Try "-f:pioneer c:u cmc=1 t:instant o:draw" as a search, maybe.
 
 # Useful Scripts
 
