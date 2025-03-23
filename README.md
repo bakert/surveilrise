@@ -11,7 +11,7 @@ A Scryfall clone.
 
 # Live Version
 
-- [bluebones.net](http://bluebones.net:3002/) - please note: no SSL cert yet, remove the 's' in https if your browser inserts it
+- [surveilrise.bluebones.net](https://surveilrise.bluebones.net/)
 
 # Getting Started
 
