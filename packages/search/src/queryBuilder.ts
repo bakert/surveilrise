@@ -110,9 +110,6 @@ export class QueryBuilder {
           throw new Error("Invalid search expression");
         }
       } else if (token instanceof BooleanOperator) {
-        if (i === 0) {
-          throw new Error("Cannot start expression with boolean operator");
-        }
         if (i === tokens.length - 1) {
           throw new Error("Cannot end expression with boolean operator");
         }
@@ -123,6 +120,30 @@ export class QueryBuilder {
           query.where.OR.push(query.where);
           query.where.OR.push(right.where);
           break;
+        }
+        // Handle NOT operator by negating the next criterion
+        else if (token.value() === "NOT") {
+          const nextToken = tokens[i + 1];
+          if (nextToken instanceof Key) {
+            const operator = tokens[i + 2];
+            const value = tokens[i + 3];
+            if (
+              !(operator instanceof Operator) ||
+              !(value instanceof StringToken)
+            ) {
+              throw new Error("Invalid key-operator-value sequence after NOT");
+            }
+            const criterion = this.buildCriterion(
+              nextToken.value(),
+              operator.value(),
+              value.value()
+            );
+            if (!query.where.AND) query.where.AND = [];
+            query.where.AND.push({ NOT: criterion });
+            i += 3;
+          } else {
+            throw new Error("Expected field after NOT operator");
+          }
         }
       } else if (token instanceof StringToken) {
         // Bare string token - search name
