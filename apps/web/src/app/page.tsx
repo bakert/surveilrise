@@ -14,7 +14,11 @@ export default function Home(): JSX.Element {
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center space-y-8">
           <div className="text-center space-y-4">
-            <h1 className="text-5xl font-bold text-white">Surveilrise</h1>
+            <h1 className="text-5xl font-bold text-white">
+              <a href="/" className="hover:text-gray-200">
+                Surveilrise
+              </a>
+            </h1>
             <p className="text-2xl text-gray-300">
               <span className="font-bold">Surveilrise</span> is a{" "}
               <span className="font-bold">Magic: The Gathering</span> card
