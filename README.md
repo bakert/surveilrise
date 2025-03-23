@@ -13,6 +13,22 @@ A Scryfall clone.
 
 - [surveilrise.bluebones.net](https://surveilrise.bluebones.net/)
 
+# API Documentation
+
+The API documentation is available at `/api/docs` when running the development server. It provides detailed information about:
+
+- Search API (`/api/search`) - Search for Magic: The Gathering cards using various criteria
+- Card Details API (`/api/cards/{id}`) - Get detailed information about a specific card
+
+The documentation includes:
+
+- Request/response formats
+- Query parameters
+- Response codes
+- Example requests and responses
+
+The OpenAPI specification is available at `/api/openapi`.
+
 # Getting Started
 
 - `git clone https://github.com/bakert/surveilrise.git`

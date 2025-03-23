@@ -1,0 +1,161 @@
+openapi: 3.1.0
+info:
+  title: Surveilrise API
+  description: API for searching and retrieving Magic The Gathering cards
+  version: 1.0.0
+servers:
+  - url: /api
+    description: API endpoint
+
+paths:
+  /search:
+    get:
+      summary: Search for cards
+      description: Search for Magic The Gathering cards using various criteria
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query string (e.g., 'type:creature cmc:3')
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: Page number for pagination (defaults to 1)
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Successful search response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cards:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        imgUrl:
+                          type: string
+                          nullable: true
+                  total:
+                    type: integer
+        "400":
+          description: Bad request - missing or invalid query parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /cards/{id}:
+    get:
+      summary: Get card details
+      description: Retrieve detailed information about a specific card
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Card's Oracle ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful card details response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  imgUrl:
+                    type: string
+                  manaCost:
+                    type: string
+                  type:
+                    type: string
+                  oracleText:
+                    type: string
+                  colors:
+                    type: array
+                    items:
+                      type: string
+                  rarity:
+                    type: string
+                  set:
+                    type: string
+                  setName:
+                    type: string
+                  collectorNumber:
+                    type: string
+                  artist:
+                    type: string
+                  legalities:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        format:
+                          type: string
+                        legal:
+                          type: boolean
+                  printings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        setCode:
+                          type: string
+                        rarity:
+                          type: string
+                        usd:
+                          type: number
+                          nullable: true
+                        eur:
+                          type: number
+                          nullable: true
+                        tix:
+                          type: number
+                          nullable: true
+                        artist:
+                          type: string
+        "404":
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
