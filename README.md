@@ -13,22 +13,6 @@ A Scryfall clone.
 
 - [surveilrise.bluebones.net](https://surveilrise.bluebones.net/)
 
-# API Documentation
-
-The API documentation is available at `/api/docs` when running the development server. It provides detailed information about:
-
-- Search API (`/api/search`) - Search for Magic: The Gathering cards using various criteria
-- Card Details API (`/api/cards/{id}`) - Get detailed information about a specific card
-
-The documentation includes:
-
-- Request/response formats
-- Query parameters
-- Response codes
-- Example requests and responses
-
-The OpenAPI specification is available at `/api/openapi`.
-
 # Getting Started
 
 - `git clone https://github.com/bakert/surveilrise.git`
@@ -120,3 +104,19 @@ Notes:
 ## Troubleshoting
 
 - VSCode shows error: `Cannot find module 'ui' or its corresponding type declarations.ts(2307)` or for any modules, restart the TS Server: Press Cmd+P then type `restart ts`, then Enter to restart the typescript server.
+
+# API Documentation
+
+The API documentation is available at `/api/docs` when running the development server. It provides detailed information about:
+
+- Search API (`/api/search`) - Search for Magic: The Gathering cards using various criteria
+- Card Details API (`/api/cards/{id}`) - Get detailed information about a specific card
+
+The documentation includes:
+
+- Request/response formats
+- Query parameters
+- Response codes
+- Example requests and responses
+
+The OpenAPI specification is available at `/api/openapi`.
