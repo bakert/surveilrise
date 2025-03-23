@@ -117,6 +117,13 @@ export function CardGrid(): JSX.Element | null {
 
   return (
     <div className="space-y-8">
+      {/* Results Count */}
+      <div className="text-white text-sm">
+        {(page - 1) * DEFAULT_PAGE_SIZE + 1}-
+        {Math.min(page * DEFAULT_PAGE_SIZE, results.total)} of {results.total}{" "}
+        cards matching `{query}`
+      </div>
+
       {/* Results Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {results.cards.map((card) => (
@@ -124,7 +131,6 @@ export function CardGrid(): JSX.Element | null {
             key={card.id}
             className="relative aspect-[2.5/3.5] cursor-pointer hover:opacity-90 transition-opacity"
             onClick={() => {
-              console.log("Clicking card:", card);
               router.push(`/card/${card.id}`);
             }}
           >

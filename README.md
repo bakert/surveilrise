@@ -1,7 +1,5 @@
 # Surveilrise
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bakert/surveilrise/ci.yml)
-
 A Scryfall clone.
 
 # Requirements
@@ -11,6 +9,10 @@ A Scryfall clone.
 - [Docker](https://www.docker.com/)
 - [Turbo](https://turbo.build/repo/docs/installing)
 
+# Live Version
+
+- [bluebones.net](http://bluebones.net:3002/) - please note: no SSL cert yet, remove the 's' in https if your browser inserts it
+
 # Getting Started
 
 - `git clone https://github.com/bakert/surveilrise.git`
@@ -19,9 +21,29 @@ A Scryfall clone.
 - `cp packages/env/.env.example packages/env/.env && ./dev-bootstrap.sh` to set up the environment variables
 - `docker-compose up -d` to run the Postgres database
 - `pnpm --filter database db:migrate:reset` to initialize the db schema. You only need to do this once.
-- `pnpm --filter scryfall exec ts-node src/index.ts` to download Scryfall data and populate the database. You can run this again any time to update to latest Scryfall data.
-- `turbo run dev` to start the webserver.
+- `pnpm --filter scryfall exec ts-node src/import.ts` to download Scryfall data and populate the database. You can run this again any time to update to latest Scryfall data.
+- `pnpm dev` to start the webserver (and live reload any changes).
 - Open http://localhost:3000 in your browser.
+
+# Useful Scripts
+
+Run tests by package:
+
+- `pnpm --filter search test`
+- `pnpm --filter database test`
+
+Quickly test the Scryfall import without actually reimporting every card:
+
+- `pnpm -r --filter database exec tsx src/reset-scryfall.ts`
+- `pnpm --filter scryfall exec ts-node src/import.ts --quick`
+
+Clear all card data without blowing away the database:
+
+- `pnpm -r --filter database exec tsx src/reset-scryfall.ts --clear-all`
+
+Completely start from scratch with the database:
+
+- `pnpm --filter database db:migrate:reset --force`
 
 ## What's inside?
 
