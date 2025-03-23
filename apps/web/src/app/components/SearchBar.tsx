@@ -48,7 +48,7 @@ export function SearchBar(): JSX.Element {
             <p>-type:creature format:modern</p>
             <p>f:commander o:&quot;whenever you gain life&quot;</p>
             <p>t:land artist:&quot;john avon&quot;</p>
-            <p>(t:dragon OR t:angel) color:b</p>
+            <p>(t:dragon OR t:angel) c:b</p>
           </div>
         </div>
       )}
