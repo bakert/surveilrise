@@ -15,6 +15,7 @@ describe("Query Integration Tests", () => {
       toughness: string | null;
       oracleText: string | null;
       printings: Array<{ artist: string | null }>;
+      legalities: Array<{ format: string; legal: boolean }>;
     }>
   > {
     const tokens = parseQuery(query);
@@ -34,6 +35,12 @@ describe("Query Integration Tests", () => {
         printings: {
           select: {
             artist: true,
+          },
+        },
+        legalities: {
+          select: {
+            format: true,
+            legal: true,
           },
         },
       },
@@ -129,6 +136,49 @@ describe("Query Integration Tests", () => {
         (card) =>
           card.name.toLowerCase().includes("burst lightning") &&
           card.typeLine.toLowerCase().includes("instant")
+      )
+    ).toBe(true);
+  });
+
+  it("should find cards legal in Vintage format", async () => {
+    const results = await runQueryTest("f:vintage");
+    expect(results.length).toBeGreaterThan(0);
+    expect(
+      results.every((card) =>
+        card.legalities.some(
+          (legality) =>
+            legality.format.toLowerCase() === "vintage" &&
+            legality.legal === true
+        )
+      )
+    ).toBe(true);
+  });
+
+  it("should find cards legal in Pioneer using full format name", async () => {
+    const results = await runQueryTest("format:pioneer");
+    expect(results.length).toBeGreaterThan(0);
+    expect(
+      results.every((card) =>
+        card.legalities.some(
+          (legality) =>
+            legality.format.toLowerCase() === "pioneer" &&
+            legality.legal === true
+        )
+      )
+    ).toBe(true);
+  });
+
+  it("should handle format queries combined with other criteria", async () => {
+    const results = await runQueryTest("f:vintage t:creature");
+    expect(results.length).toBeGreaterThan(0);
+    expect(
+      results.every(
+        (card) =>
+          card.legalities.some(
+            (legality) =>
+              legality.format.toLowerCase() === "vintage" &&
+              legality.legal === true
+          ) && card.typeLine.toLowerCase().includes("creature")
       )
     ).toBe(true);
   });

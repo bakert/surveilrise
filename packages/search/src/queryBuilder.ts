@@ -27,9 +27,7 @@ type FieldQuery = {
         equals: string;
         mode: "insensitive";
       };
-      status: {
-        equals: string;
-      };
+      legal: boolean;
     };
   };
   oracleText?: {
@@ -169,9 +167,7 @@ export class QueryBuilder {
                 equals: value,
                 mode: "insensitive",
               },
-              status: {
-                equals: "legal",
-              },
+              legal: true,
             },
           },
         };
