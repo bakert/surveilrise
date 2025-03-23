@@ -2,7 +2,11 @@ import { QueryBuilder } from "./queryBuilder";
 import { Expression, Key, StringToken, Operator } from "./types";
 
 describe("QueryBuilder", () => {
-  const builder = new QueryBuilder();
+  let builder: QueryBuilder;
+
+  beforeEach(() => {
+    builder = new QueryBuilder();
+  });
 
   it("should build a simple field-value query", () => {
     const tokens = new Expression([
