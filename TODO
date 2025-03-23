@@ -33,3 +33,14 @@
 - "/" on the keyboard should jump you to the search bar
 - Standardize on tsx, remove ts-node
 - If there is only one result, go straight to the detail page
+- Add the "name" keyword
+- When your search fails give feedback about what's wrong (the error message in the Error is actually fine to show)
+- We could add many other fields that we currently don't ingest, like "loyalty"
+- It would be nice if the batch report said how many were changed if prisma upsert can tell us
+- When search via artist (or any other printing-specific thing) when you click through you see latest printing NOT the version that matched
+- Some way to see the art of other printings (mouseover/clickthrough/something)
+- aritst:"john avon" t:island will only ever show you his most recent even though he has done many
+- Remove the ui package, we aren't using it
+- Our stable ordering of name:asc unfortunately puts all the arena stuff (A-CardName) first and they are ugly
+- We don't have a concept of restricted or banned which is insufficient and makes Black Lotus illegal in Vintage!
+- The circular dependency between scryfall and database is a little awkward, can we break it?
