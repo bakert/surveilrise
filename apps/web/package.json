@@ -13,6 +13,7 @@
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-separator": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
+    "@types/swagger-ui-react": "^5.18.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "database": "1.0.0",
@@ -22,6 +23,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "search": "1.0.0",
+    "swagger-ui-react": "^5.20.1",
     "tailwind-merge": "^3.0.2",
     "ui": "1.0.0"
   },

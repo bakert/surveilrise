@@ -9,6 +9,7 @@ import type {
   Card as PrismaCard,
   Printing,
   PrismaClient,
+  Legality,
 } from "@prisma/client";
 
 interface PageProps {
@@ -29,10 +30,24 @@ interface CardDetails {
   set: string;
   setName: string;
   collectorNumber: string;
+  artist: string;
+  legalities: Array<{
+    format: string;
+    legal: boolean;
+  }>;
+  printings: Array<{
+    setCode: string;
+    rarity: string;
+    usd: number | null;
+    eur: number | null;
+    tix: number | null;
+    artist: string;
+  }>;
 }
 
-type CardWithPrintings = PrismaCard & {
+type CardWithPrintingsAndLegalities = PrismaCard & {
   printings: Printing[];
+  legalities: Legality[];
 };
 
 const typedPrisma = prisma as PrismaClient;
@@ -66,10 +81,10 @@ async function getCardDetails(id: string): Promise<CardDetails | null> {
           orderBy: {
             releasedAt: "desc",
           },
-          take: 1,
         },
+        legalities: true,
       },
-    })) as CardWithPrintings | null;
+    })) as CardWithPrintingsAndLegalities | null;
 
     if (!card) {
       return null;
@@ -89,6 +104,19 @@ async function getCardDetails(id: string): Promise<CardDetails | null> {
       set: latestPrinting?.setCode || "",
       setName: latestPrinting?.setCode || "",
       collectorNumber: latestPrinting?.collectorNumber || "",
+      artist: latestPrinting?.artist || "Unknown",
+      legalities: card.legalities.map((l) => ({
+        format: l.format,
+        legal: l.legal,
+      })),
+      printings: card.printings.map((p) => ({
+        setCode: p.setCode,
+        rarity: p.rarity,
+        usd: p.usd ? Number(p.usd) : null,
+        eur: p.eur ? Number(p.eur) : null,
+        tix: p.tix ? Number(p.tix) : null,
+        artist: p.artist || "Unknown",
+      })),
     };
   } catch (error) {
     console.error("Error fetching card:", error);
@@ -104,6 +132,14 @@ export default async function CardPage({
   if (!card) {
     notFound();
   }
+
+  const formatLegalities = card.legalities.reduce(
+    (acc, { format, legal }) => {
+      acc[legal ? "legal" : "not_legal"].push(format);
+      return acc;
+    },
+    { legal: [] as string[], not_legal: [] as string[] }
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
@@ -126,22 +162,27 @@ export default async function CardPage({
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Card Image */}
-                <div className="relative aspect-[2.5/3.5]">
-                  {card.imgUrl ? (
-                    <Image
-                      src={card.imgUrl}
-                      alt={card.name}
-                      fill
-                      className="object-contain rounded-lg"
-                      priority
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-700 rounded-lg flex items-center justify-center p-4">
-                      <span className="text-gray-400 text-sm text-center">
-                        No image found
-                      </span>
-                    </div>
-                  )}
+                <div className="space-y-4">
+                  <div className="relative aspect-[2.5/3.5]">
+                    {card.imgUrl ? (
+                      <Image
+                        src={card.imgUrl}
+                        alt={card.name}
+                        fill
+                        className="object-contain rounded-lg"
+                        priority
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-700 rounded-lg flex items-center justify-center p-4">
+                        <span className="text-gray-400 text-sm text-center">
+                          No image found
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-gray-400 text-sm text-center">
+                    Illustrated by {card.artist}
+                  </div>
                 </div>
 
                 {/* Card Details */}
@@ -166,17 +207,87 @@ export default async function CardPage({
                     </p>
                   </div>
 
-                  {/* Set Information */}
-                  <div className="pt-4 border-t border-gray-700">
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-400">
+                  {/* Format Legalities */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white">
+                      Format Legalities
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="font-medium">Set:</span>
-                        <span className="ml-2">{card.setName}</span>
+                        <h4 className="text-sm font-medium text-green-400 mb-2">
+                          Legal in:
+                        </h4>
+                        <div className="space-y-1">
+                          {formatLegalities.legal.map((format) => (
+                            <Badge
+                              key={format}
+                              variant="secondary"
+                              className="bg-green-900/30 text-green-400 border-green-900 mr-2 mb-2"
+                            >
+                              {format}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                       <div>
-                        <span className="font-medium">Number:</span>
-                        <span className="ml-2">{card.collectorNumber}</span>
+                        <h4 className="text-sm font-medium text-red-400 mb-2">
+                          Not legal in:
+                        </h4>
+                        <div className="space-y-1">
+                          {formatLegalities.not_legal.map((format) => (
+                            <Badge
+                              key={format}
+                              variant="secondary"
+                              className="bg-red-900/30 text-red-400 border-red-900 mr-2 mb-2"
+                            >
+                              {format}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Printings */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white">
+                      Printings
+                    </h3>
+                    <div className="space-y-4">
+                      {card.printings.map((printing) => (
+                        <div
+                          key={`${printing.setCode}-${printing.artist}`}
+                          className="bg-gray-700/50 rounded-lg p-4 space-y-2"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="text-white font-medium">
+                                {printing.setCode} - {printing.rarity}
+                              </div>
+                              <div className="text-sm text-gray-400">
+                                Illustrated by {printing.artist}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              {printing.usd && (
+                                <div className="text-green-400">
+                                  ${printing.usd.toFixed(2)} USD
+                                </div>
+                              )}
+                              {printing.eur && (
+                                <div className="text-blue-400">
+                                  €{printing.eur.toFixed(2)} EUR
+                                </div>
+                              )}
+                              {printing.tix && (
+                                <div className="text-purple-400">
+                                  {printing.tix.toFixed(2)} TIX
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>

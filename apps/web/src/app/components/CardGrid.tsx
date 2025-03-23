@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DEFAULT_PAGE_SIZE } from "../constants";
 
@@ -59,8 +60,32 @@ export function CardGrid(): JSX.Element | null {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="space-y-8">
+        {/* Loading Results Count */}
+        <div className="flex space-x-1 items-center">
+          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-5 w-32" />
+        </div>
+
+        {/* Loading Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          {Array.from({ length: DEFAULT_PAGE_SIZE }).map((_, index) => (
+            <Skeleton
+              key={index}
+              className="aspect-[2.5/3.5] w-full rounded-lg"
+            />
+          ))}
+        </div>
+
+        {/* Loading Pagination */}
+        <div className="flex justify-center items-center space-x-2">
+          <Skeleton className="h-9 w-9 rounded-md" />
+          <Skeleton className="h-9 w-9 rounded-md" />
+          <Skeleton className="h-9 w-9 rounded-md" />
+          <Skeleton className="h-9 w-9 rounded-md" />
+          <Skeleton className="h-9 w-9 rounded-md" />
+        </div>
       </div>
     );
   }

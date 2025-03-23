@@ -11,7 +11,23 @@ A Scryfall clone.
 
 # Live Version
 
-- [bluebones.net](http://bluebones.net:3002/) - please note: no SSL cert yet, remove the 's' in https if your browser inserts it
+- [surveilrise.bluebones.net](https://surveilrise.bluebones.net/)
+
+# API Documentation
+
+The API documentation is available at `/api/docs` when running the development server. It provides detailed information about:
+
+- Search API (`/api/search`) - Search for Magic: The Gathering cards using various criteria
+- Card Details API (`/api/cards/{id}`) - Get detailed information about a specific card
+
+The documentation includes:
+
+- Request/response formats
+- Query parameters
+- Response codes
+- Example requests and responses
+
+The OpenAPI specification is available at `/api/openapi`.
 
 # Getting Started
 
@@ -24,6 +40,7 @@ A Scryfall clone.
 - `pnpm --filter scryfall exec ts-node src/import.ts` to download Scryfall data and populate the database. You can run this again any time to update to latest Scryfall data.
 - `pnpm dev` to start the webserver (and live reload any changes).
 - Open http://localhost:3000 in your browser.
+- Try "-f:pioneer c:u cmc=1 t:instant o:draw" as a search, maybe.
 
 # Useful Scripts
 
