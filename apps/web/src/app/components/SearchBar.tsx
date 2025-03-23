@@ -44,10 +44,10 @@ export function SearchBar(): JSX.Element {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-1">
             <p>cmc&gt;=3 type:creature</p>
-            <p>oracle:"draw a card" color:u</p>
+            <p>oracle:&quot;draw a card&quot; color:u</p>
             <p>-type:creature format:modern</p>
-            <p>f:commander o:"whenever you gain life"</p>
-            <p>t:land artist:"john avon"</p>
+            <p>f:commander o:&quot;whenever you gain life&quot;</p>
+            <p>t:land artist:&quot;john avon&quot;</p>
           </div>
         </div>
       )}
