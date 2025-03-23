@@ -27,6 +27,7 @@ export function CardGrid(): JSX.Element | null {
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const fetchResults = async (): Promise<void> => {
@@ -160,13 +161,25 @@ export function CardGrid(): JSX.Element | null {
             }}
           >
             {card.imgUrl ? (
-              <Image
-                src={card.imgUrl}
-                alt={card.name}
-                fill
-                className="object-contain rounded-lg"
-                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-              />
+              <div className="relative aspect-[2.5/3.5] w-full">
+                {!loadedImages.has(card.imgUrl) && (
+                  <Skeleton className="absolute inset-0 rounded-lg" />
+                )}
+                <Image
+                  src={card.imgUrl}
+                  alt={card.name}
+                  fill
+                  className={`object-contain rounded-lg ${
+                    loadedImages.has(card.imgUrl) ? "opacity-100" : "opacity-0"
+                  }`}
+                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
+                  onLoadingComplete={() => {
+                    setLoadedImages(
+                      (prev) => new Set(Array.from(prev).concat(card.imgUrl!))
+                    );
+                  }}
+                />
+              </div>
             ) : (
               <div className="w-full h-full bg-gray-700 rounded-lg flex items-center justify-center p-4">
                 <span className="text-gray-400 text-sm text-center">
