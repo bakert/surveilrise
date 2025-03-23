@@ -1,54 +1,35 @@
 - Update dependencies (turbo, eslint, pnpm, nextjs, etc.)
-- Move the root dependencies to devDependencies (they all are)
-- Rename scryfall's index.ts to ingest.ts or something more descriptive
-- Make the location of the scryfall download (and any created file) configurable
-- Use tsup not tsc for scryfall build step?
-- Check mtime of downloaded scryfall file and don't re-download if we already have latest
-- Make the new Scryfall database "off to one  side" and then swap it in when it's ready
-- Break apart fetching scryfall bulk data to the filesystem and parsing the bulk data and inserting into db
 - Some retry logic (or via lib) for downloading
-- format table
-- face table
+- face table (cards are better modeled as one card with 1+ faces than as a single thing with one manaCost etc.)
 - More unique constraints could be added to the Scryfall stuff, what we have is pretty arbitrary
-- Does the bulk data we're fetching include non-English card info? Should it?
+- Should we support more non-English stuff? Less? Right now we get each card in English unless it only exists in non-English.
 - Think about logging more holistically. Maybe we call a centralized logger and that chooses to console.log
 - Model bulk data last updated as a date not a string
-- Test the upsert and delete stuff with an older bulk data
-- Entire db update should be in a transaction that fails if any part of it fails (either scryfall changed their schema, or added a layout we don't recognize, or any number of things
-- Should database/scryfall be called database/cards? Or is it such a mirror of scryfall that it's better named scryfall?
 - Rename the db from "turborepo"
-- Figure out why `cd packages/database/ && pnpm db:migrate:reset` doesn't create the _prisma_migrations table. Either add something like `pnpm --filter database exec -- prisma migrate resolve --applied 20230520223517_init` to instructions or just make it work correctly
-- Move the ScryfallCard type out of the script because it kind of obscures the actual interesting parts by being so huge
-- Both scryfall and database need to understand ScryfallCard as it currently stands so move it somewhere shared. Or stop that being true. Importing into database from scryfall is circular.
 - Include in the README "how to connect to db", "how to run watcher while developing", "how to bring up db", "how to bring up web", etc.
 - Don't allow commit to main (done on github, pre-commit on local)
 - Don't allow merge unless CI/build passes
 - Automatically merge when CI/build passes
-- Include instructions about prisma generate to get types after changing db somewhere
 - The properties of ScryfallCard should use camelCase not snake_case despite the source data. We're in typescript world at that point.
-- Probably remove prisma logging, or do it differently
 - Wrapping the whole scryfall update in a transaction is nice for pass/fail but bad for perf, maybe per-card transactions instead and if some cards get updated and others don't due to a data issue, that's ok? But don't delete anything in those cases? A validation step would help but seems like a lot of extra code to keep in sync with Scryfall's doings?
 - Some cards do not have an oracle_id in the Scryfall bulk data at the top level, only at the face level. Things like https://scryfall.com/card/sld/1556/jinnie-fay-jetmirs-second-jinnie-fay-jetmirs-second. I am skiping them for now but we should accommodate them.
 - We never delete a card if the oracle_id ceases to exist. I'm not sure how common this is but could be important if a card got a new oracle_id for some reason we wouldn't want it to show up twice. Probably just select all oracle ids at the start of the update, diff with those found during the update, and delete the diff (if a small number, if high flag to a human)
 - A single imgUrl for a Printing is very naïve, cards have more than one image frequently
 - You should be able to chain our custom errors (options second param)
-- Find a better place for reset-scryfall and test-query if we're keeping them around
+- Find a better place for reset-scryfall, just make it a flag on the import script?
 - Unit tests and functional tests should have commands in the packages and even maybe at the top level
 - Should queryBuilder just be called query?
-- Spec mentions `p:2` (in the example API call) but this is not a valid Scryfall query. Perhaps it should be.
-- Infinity Elemental is a good edge case test (for power)
+- Spec mentions `p:2` (in the example API call) but this is not a valid Scryfall query. Perhaps we should support it?
 - There are large numbers of card properties and related search syntax that are not mentioned in the spec that we could implement
-- Support "temur" and other non-char values for color queries
+- Support "temur" and "blue" and "azorious" non-char values for color queries
 - Where we are throwing basic Error instead throw an Error of our own
 - Have the search integration test explain that you need to build a local db for it to work if there isn't one
 - Ability to turn on query logging in the Prisma client via DEBUG=1 or similar env var
 - `pow>999999999999999999999999999999999999` does not find Infinity Elemental because of the hacky way we represent infinity. But I don't think it's worth moving to FLOAT to get psql's Infinity constant.
 - Exclude art cards/tokens/maybe funny cards either by default or from the app entirely?
-- Is the search query "OR" or "AND" (no other text) an error? Or part of a card name?
 - We have vestigal regex support but we don't use it in queryBuilder
-- statValue is exported solely to test - maybe we can have a higher level test that exercises it instead and make it private again
-- Add the tests to CI and require them to pass before allowing merge
-- Scryfall data ingestion was pretty darn slow on my server despite being fairly snappy on laptop, maybe make more effort to speed it up.
+- statValue and manaValue are exported solely to test - maybe we can have a higher level test that exercises them instead and make it private again
+- Scryfall data ingestion is somewhat slow on the "prod" server despite being fairly snappy on laptop, maybe make more effort to speed it up.
 - "/" on the keyboard should jump you to the search bar
 - Standardize on tsx, remove ts-node
 - If there is only one result, go straight to the detail page
